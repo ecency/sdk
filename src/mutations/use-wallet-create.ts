@@ -41,7 +41,7 @@ export function useWalletCreate(currency: EcencyWalletCurrency) {
       } as EcencyCreateWalletInformation;
     },
   });
-  const importWallet = useCallback((currency: EcencyWalletCurrency) => {}, []);
+  const importWallet = useCallback(() => {}, []);
 
   return {
     createWallet,

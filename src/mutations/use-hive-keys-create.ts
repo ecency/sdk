@@ -24,7 +24,6 @@ export function useCreateAccountKeys(username: string) {
         active: activeKey.toString(),
         posting: postingKey.toString(),
         memo: memoKey.toString(),
-        masterPassword: wif,
         ownerPubkey: ownerKey.createPublic().toString(),
         activePubkey: activeKey.createPublic().toString(),
         postingPubkey: postingKey.createPublic().toString(),
