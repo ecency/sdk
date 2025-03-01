@@ -55,7 +55,7 @@ interface AtomResponse {
  * @param address
  * @returns
  */
-export function getExternalWalletBalanceQuery(
+export function useGetExternalWalletBalanceQuery(
   currency: EcencyWalletCurrency,
   address: string
 ) {

@@ -12,7 +12,13 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: ["crypto", "react", "@hiveio/dhive", "@tanstack/react-query"],
+      external: [
+        "crypto",
+        "react",
+        "@hiveio/dhive",
+        "@tanstack/react-query",
+        "lru-cache",
+      ],
     },
   },
   resolve: {

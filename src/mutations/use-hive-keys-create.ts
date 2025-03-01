@@ -3,7 +3,7 @@ import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/types";
 import { useSeedPhrase } from "@/queries";
 
-export function useCreateAccountKeys(username: string) {
+export function useHiveKeysCreate(username: string) {
   const { data: mnemonic } = useSeedPhrase();
 
   return useMutation({
