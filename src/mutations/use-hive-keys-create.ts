@@ -1,22 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
-import base58 from "bs58";
-import { cryptoUtils, PrivateKey } from "@hiveio/dhive";
+import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/types";
-
-function random() {
-  return Math.random().toString(36).substring(7);
-}
+import { useSeedPhrase } from "@/queries";
 
 export function useCreateAccountKeys(username: string) {
+  const { data: mnemonic } = useSeedPhrase();
+
   return useMutation({
     mutationKey: ["ecency", "create-hive-keys", username],
     mutationFn: async () => {
-      const wif = "P" + base58.encode(cryptoUtils.sha256(random()));
+      if (!mnemonic) {
+        throw new Error("[Ecency][Wallets] - no seed to create Hive account");
+      }
 
-      const ownerKey = PrivateKey.fromLogin(username, wif, "owner");
-      const activeKey = PrivateKey.fromLogin(username, wif, "active");
-      const postingKey = PrivateKey.fromLogin(username, wif, "posting");
-      const memoKey = PrivateKey.fromLogin(username, wif, "memo");
+      const ownerKey = PrivateKey.fromLogin(username, mnemonic, "owner");
+      const activeKey = PrivateKey.fromLogin(username, mnemonic, "active");
+      const postingKey = PrivateKey.fromLogin(username, mnemonic, "posting");
+      const memoKey = PrivateKey.fromLogin(username, mnemonic, "memo");
 
       return {
         username,
