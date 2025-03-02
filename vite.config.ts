@@ -1,16 +1,23 @@
 import path, { resolve } from "path";
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
+import react from "@vitejs/plugin-react";
+import dtsPlugin from "vite-plugin-dts";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
   build: {
-    lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "ecency-wallets",
-      fileName: "ecency-wallets",
+    minify: false,
+    terserOptions: {
+      compress: false,
+      mangle: false,
     },
-
+    lib: {
+      entry: path.resolve(__dirname, "src/index.ts"),
+      name: "Ecency Wallets",
+      formats: ["es"],
+      fileName: (format) => `ecency-wallets.${format}.js`,
+    },
     rollupOptions: {
       external: [
         "crypto",
@@ -18,13 +25,26 @@ export default defineConfig({
         "@hiveio/dhive",
         "@tanstack/react-query",
         "lru-cache",
+        "scheduler",
+        "react/jsx-runtime",
+        "@okxweb3/coin-aptos",
+        "@okxweb3/coin-base",
+        "@okxweb3/coin-bitcoin",
+        "@okxweb3/coin-cosmos",
+        "@okxweb3/coin-ethereum",
+        "@okxweb3/coin-solana",
+        "@okxweb3/coin-ton",
+        "@okxweb3/coin-tron",
+        "@okxweb3/crypto-lib",
+        "bip39",
       ],
     },
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "near-api-js": "near-api-js/dist/near-api-js.js",
     },
   },
-  plugins: [dts()],
+  plugins: [react(), dtsPlugin({ rollupTypes: true }), nodePolyfills()],
 });
