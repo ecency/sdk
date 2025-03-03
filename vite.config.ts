@@ -7,11 +7,6 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
   build: {
-    minify: false,
-    terserOptions: {
-      compress: false,
-      mangle: false,
-    },
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "Ecency Wallets",

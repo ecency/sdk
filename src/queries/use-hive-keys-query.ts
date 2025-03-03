@@ -1,14 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useSeedPhrase } from "./use-seed-phrase";
 import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/types";
-import { useSeedPhrase } from "@/queries";
+import { mnemonicToSeed } from "bip39";
 
-export function useHiveKeysCreate(username: string) {
+export function useHiveKeysQuery(username: string) {
   const { data: mnemonic } = useSeedPhrase();
 
-  return useMutation({
-    mutationKey: ["ecency", "create-hive-keys", username],
-    mutationFn: async () => {
+  return useQuery({
+    queryKey: [
+      "ecenc-wallets",
+      "hive-keys",
+      username,
+      mnemonicToSeed(mnemonic ?? ""),
+    ],
+    queryFn: async () => {
       if (!mnemonic) {
         throw new Error("[Ecency][Wallets] - no seed to create Hive account");
       }

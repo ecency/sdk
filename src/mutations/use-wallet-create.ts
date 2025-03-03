@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EcencyCreateWalletInformation } from "@/types";
 import { EcencyWalletCurrency } from "@/enums";
 import { delay, getWallet } from "@/utils";
@@ -15,11 +15,15 @@ const PATHS = {
   [EcencyWalletCurrency.ATOM]: "m/44'/118'/0'/0/0", // Cosmos (BIP44)
 } as const;
 
-export function useWalletCreate(currency: EcencyWalletCurrency) {
+export function useWalletCreate(
+  username: string,
+  currency: EcencyWalletCurrency
+) {
   const { data: mnemonic } = useSeedPhrase();
+  const queryClient = useQueryClient();
 
   const createWallet = useMutation({
-    mutationKey: ["ecency", "create-wallet", currency],
+    mutationKey: ["ecency-wallets", "create-wallet", username, currency],
     mutationFn: async () => {
       if (!mnemonic) {
         throw new Error("[Ecency][Wallets] - No seed to create a wallet");
@@ -38,7 +42,16 @@ export function useWalletCreate(currency: EcencyWalletCurrency) {
         privateKey,
         address: address.address,
         publicKey: address.publicKey,
+        username,
+        currency,
       } as EcencyCreateWalletInformation;
+    },
+    onSuccess: (info) => {
+      queryClient.setQueryData<
+        Map<EcencyWalletCurrency, EcencyCreateWalletInformation>
+      >(["ecency-wallets", "wallets", info.username], (data) =>
+        new Map(data ? Array.from(data.entries()) : []).set(info.currency, info)
+      );
     },
   });
   const importWallet = useCallback(() => {}, []);
