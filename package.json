@@ -1,6 +1,6 @@
 {
   "name": "@ecency/wallets",
-  "private": true,
+  "private": false,
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/ecency-wallets.umd.js",
