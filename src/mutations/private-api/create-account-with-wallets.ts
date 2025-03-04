@@ -22,6 +22,9 @@ export function useCreateAccountWithWallets(username: string) {
     mutationFn: ({ currency, address }: Payload) =>
       fetch(CONFIG.privateApiHost + "/private-api/wallets-add", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           username,
           token: currency,
