@@ -20,7 +20,7 @@ export function useCreateAccountWithWallets(username: string) {
   return useMutation({
     mutationKey: ["ecency-wallets", "create-account-with-wallets", username],
     mutationFn: ({ currency, address }: Payload) =>
-      fetch(CONFIG + "/private-api/wallets-add", {
+      fetch(CONFIG.privateApiHost + "/private-api/wallets-add", {
         method: "POST",
         body: JSON.stringify({
           username,
