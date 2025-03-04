@@ -1,10 +1,19 @@
 {
   "name": "@ecency/wallets",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/ecency-wallets.umd.js",
   "module": "./dist/ecency-wallets.es.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/ecency-renderer.es.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
