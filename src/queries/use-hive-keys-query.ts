@@ -2,27 +2,28 @@ import { useQuery } from "@tanstack/react-query";
 import { useSeedPhrase } from "./use-seed-phrase";
 import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/types";
-import { mnemonicToSeed } from "bip39";
+import { mnemonicToSeedSync } from "bip39";
+import { useMemo } from "react";
 
 export function useHiveKeysQuery(username: string) {
   const { data: mnemonic } = useSeedPhrase();
 
+  const seed = useMemo(
+    () => mnemonicToSeedSync(mnemonic ?? "").toString("hex"),
+    [mnemonic]
+  );
+
   return useQuery({
-    queryKey: [
-      "ecenc-wallets",
-      "hive-keys",
-      username,
-      mnemonicToSeed(mnemonic ?? ""),
-    ],
+    queryKey: ["ecencу-wallets", "hive-keys", username, seed],
     queryFn: async () => {
       if (!mnemonic) {
         throw new Error("[Ecency][Wallets] - no seed to create Hive account");
       }
 
-      const ownerKey = PrivateKey.fromLogin(username, mnemonic, "owner");
-      const activeKey = PrivateKey.fromLogin(username, mnemonic, "active");
-      const postingKey = PrivateKey.fromLogin(username, mnemonic, "posting");
-      const memoKey = PrivateKey.fromLogin(username, mnemonic, "memo");
+      const ownerKey = PrivateKey.fromSeed(seed + "owner");
+      const activeKey = PrivateKey.fromSeed(seed + "active");
+      const postingKey = PrivateKey.fromSeed(seed + "posting");
+      const memoKey = PrivateKey.fromSeed(seed + "memo");
 
       return {
         username,
