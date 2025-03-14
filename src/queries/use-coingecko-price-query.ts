@@ -44,6 +44,9 @@ export function useCoinGeckoPriceQuery(currency?: EcencyWalletCurrency) {
         case EcencyWalletCurrency.SOL:
           curr = "solana";
           break;
+        case EcencyWalletCurrency.TON:
+          curr = "trx";
+          break;
         default:
           curr = currency as string;
       }

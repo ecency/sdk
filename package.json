@@ -1,10 +1,11 @@
 {
   "name": "@ecency/wallets",
   "private": false,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/ecency-wallets.umd.js",
   "module": "./dist/ecency-wallets.es.js",
+  "typings": "./dist/ecency-wallets.es.d.ts",
   "files": [
     "dist",
     "README.md"
