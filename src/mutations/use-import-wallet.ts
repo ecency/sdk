@@ -42,7 +42,7 @@ async function getPrivateKeyFromSeedAndValidate(
         privateKey: derivedPrivateKey,
       });
 
-      if (derivedAddress === address) {
+      if (derivedAddress.address === address) {
         return derivedPrivateKey;
       }
     } catch (error) {
