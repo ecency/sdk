@@ -84,11 +84,12 @@ export function useImportWallet(
         const derivedAddress = await wallet.getNewAddress({
           privateKey: privateKeyOrSeed,
         });
-        const isValidPrivateKey = (await wallet.validPrivateKey({
+        const validationResult = (await wallet.validPrivateKey({
           privateKey: privateKeyOrSeed,
-        })) as boolean;
+        })) as { isValid: boolean };
 
-        isValid = derivedAddress === address && isValidPrivateKey;
+        isValid =
+          derivedAddress.address === address && validationResult.isValid;
       }
 
       if (!isValid) {
