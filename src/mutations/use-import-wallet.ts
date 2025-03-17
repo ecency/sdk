@@ -113,6 +113,7 @@ export function useImportWallet(
           address,
           username,
           currency,
+          custom: true,
         })
       );
     },

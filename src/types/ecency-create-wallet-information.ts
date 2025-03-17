@@ -6,4 +6,5 @@ export interface EcencyCreateWalletInformation {
   publicKey: string;
   username: string;
   currency: EcencyWalletCurrency;
+  custom?: boolean;
 }
