@@ -45,7 +45,6 @@ async function getPrivateKeyFromSeedAndValidate(
       if (derivedAddress === address) {
         return derivedPrivateKey;
       }
-      return undefined;
     } catch (error) {
       return undefined;
     }
