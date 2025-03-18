@@ -1,4 +1,5 @@
 import { EcencyWalletCurrency } from "@/enums";
+import { getWallet } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
 interface MempoolResponse {

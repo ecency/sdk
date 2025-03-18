@@ -14,7 +14,6 @@ export function getWallet(
   switch (currency) {
     case EcencyWalletCurrency.BTC:
       return new BtcWallet();
-      EcencyWalletCurrency;
     case EcencyWalletCurrency.ETH:
       return new EthWallet();
 
