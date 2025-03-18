@@ -19,7 +19,7 @@ export function useWalletCreate(
   username: string,
   currency: EcencyWalletCurrency
 ) {
-  const { data: mnemonic } = useSeedPhrase();
+  const { data: mnemonic } = useSeedPhrase(username);
   const queryClient = useQueryClient();
 
   const createWallet = useMutation({

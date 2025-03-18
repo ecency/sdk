@@ -4,7 +4,7 @@ import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/types";
 
 export function useHiveKeysQuery(username: string) {
-  const { data: seed } = useSeedPhrase();
+  const { data: seed } = useSeedPhrase(username);
 
   return useQuery({
     queryKey: ["ecencу-wallets", "hive-keys", username, seed],
