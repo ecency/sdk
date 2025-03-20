@@ -9,6 +9,10 @@ const HD_PATHS: Record<EcencyWalletCurrency, string[]> = {
     "m/84'/0'/0'/0/0",
     "m/44'/0'/0'/0/0",
     "m/49'/0'/0'/0/0",
+    "m/84'/0'/0'/0", // XVerse wallet – Legacy
+    "m/44'/0'/0'/0", // XVerse wallet – Segwit
+    "m/49'/0'/0'/0", // XVerse wallet – Native segwit
+    "m/86'/0'/0'/0", // XVerse wallet – Taproot
   ],
   [EcencyWalletCurrency.ETH]: ["m/44'/60'/0'/0/0"],
   [EcencyWalletCurrency.SOL]: ["m/44'/501'/0'/0'"],
