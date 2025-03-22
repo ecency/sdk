@@ -1,5 +1,5 @@
 import { EcencyWalletCurrency } from "@/enums";
-import { getPrivateKeyFromSeedAndValidate } from "@/functions";
+import { getKeysFromSeed } from "@/functions";
 import { EcencyCreateWalletInformation } from "@/types";
 import { getWallet } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ export function useImportWallet(
 
   return useMutation({
     mutationKey: ["ecency-wallets", "import-wallet", username, currency],
-    mutationFn: async ({ privateKeyOrSeed, address }: Payload) => {
+    mutationFn: async ({ privateKeyOrSeed }: Payload) => {
       const wallet = getWallet(currency);
 
       if (!wallet) {
@@ -25,30 +25,24 @@ export function useImportWallet(
       }
 
       const isSeed = privateKeyOrSeed.split(" ").length === 12;
-      let isValid = false;
+      let address;
       let privateKey = privateKeyOrSeed;
 
       if (isSeed) {
-        privateKey = await getPrivateKeyFromSeedAndValidate(
+        [privateKey, address] = await getKeysFromSeed(
           privateKeyOrSeed,
-          address,
           wallet,
           currency
         );
-        isValid = !!privateKey;
       } else {
-        const derivedAddress = await wallet.getNewAddress({
-          privateKey: privateKeyOrSeed,
-        });
-        const validationResult = (await wallet.validPrivateKey({
-          privateKey: privateKeyOrSeed,
-        })) as { isValid: boolean };
-
-        isValid =
-          derivedAddress.address === address && validationResult.isValid;
+        address = (
+          await wallet.getNewAddress({
+            privateKey: privateKeyOrSeed,
+          })
+        ).address;
       }
 
-      if (!isValid) {
+      if (!address || !privateKeyOrSeed) {
         throw new Error(
           "Private key/seed phrase isn't matching with public key or token"
         );
