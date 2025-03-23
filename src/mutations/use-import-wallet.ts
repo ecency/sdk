@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EcencyWalletsPrivateApi } from "./private-api-namespace";
 
 interface Payload {
-  address: string;
   privateKeyOrSeed: string;
 }
 
