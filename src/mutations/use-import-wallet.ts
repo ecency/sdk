@@ -3,6 +3,7 @@ import { getKeysFromSeed } from "@/functions";
 import { EcencyCreateWalletInformation } from "@/types";
 import { getWallet } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { EcencyWalletsPrivateApi } from "./private-api-namespace";
 
 interface Payload {
   address: string;
@@ -14,6 +15,8 @@ export function useImportWallet(
   currency: EcencyWalletCurrency
 ) {
   const queryClient = useQueryClient();
+  const { mutateAsync: checkWalletExistence } =
+    EcencyWalletsPrivateApi.useCheckWalletExistence();
 
   return useMutation({
     mutationKey: ["ecency-wallets", "import-wallet", username, currency],
@@ -45,6 +48,17 @@ export function useImportWallet(
       if (!address || !privateKeyOrSeed) {
         throw new Error(
           "Private key/seed phrase isn't matching with public key or token"
+        );
+      }
+
+      // Check wallet for existence in an Ecency's private API
+      const hasChecked = await checkWalletExistence({
+        address,
+        currency,
+      });
+      if (!hasChecked) {
+        throw new Error(
+          "This wallet has already in use by Hive account. Please, try another one"
         );
       }
 

@@ -13,7 +13,6 @@ export default defineConfig({
       formats: ["es"],
       fileName: (format) => `ecency-wallets.${format}.js`,
     },
-    minify: false,
     rollupOptions: {
       external: [
         "crypto",
