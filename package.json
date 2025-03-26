@@ -1,11 +1,12 @@
 {
-  "name": "@ecency/wallets",
+  "name": "@ecency/sdk",
   "private": false,
-  "version": "1.1.2",
+  "version": "1.0.0",
   "type": "module",
-  "main": "./dist/ecency-wallets.umd.js",
-  "module": "./dist/ecency-wallets.es.js",
-  "typings": "./dist/ecency-wallets.es.d.ts",
+  "license": "MIT",
+  "main": "./dist/ecency-sdk.umd.js",
+  "module": "./dist/ecency-sdk.es.js",
+  "typings": "./dist/ecency-sdk.es.d.ts",
   "files": [
     "dist",
     "README.md"

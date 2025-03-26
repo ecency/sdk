@@ -9,9 +9,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "Ecency Wallets",
+      name: "Ecency SDK",
       formats: ["es"],
-      fileName: (format) => `ecency-wallets.${format}.js`,
+      fileName: (format) => `ecency-sdk.${format}.js`,
     },
     rollupOptions: {
       external: [
