@@ -41,6 +41,7 @@
     "@okxweb3/coin-ton": "^1.1.1-beta.1",
     "@okxweb3/coin-tron": "^1.1.0",
     "@okxweb3/crypto-lib": "^1.0.10",
-    "bip39": "^3.1.0"
+    "bip39": "^3.1.0",
+    "hivesigner": "3.3.4"
   }
 }

@@ -32,6 +32,7 @@ export default defineConfig({
         "@okxweb3/coin-tron",
         "@okxweb3/crypto-lib",
         "bip39",
+        "hivesigner",
       ],
     },
   },
