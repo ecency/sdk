@@ -6,7 +6,7 @@ import { SolWallet } from "@okxweb3/coin-solana";
 import { AtomWallet } from "@okxweb3/coin-cosmos";
 import { AptosWallet } from "@okxweb3/coin-aptos";
 import { BaseWallet } from "@okxweb3/coin-base";
-import { EcencyWalletCurrency } from "@/enums";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 
 export function getWallet(
   currency: EcencyWalletCurrency

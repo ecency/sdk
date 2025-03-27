@@ -1,7 +1,7 @@
 import { CONFIG } from "@/config";
-import { EcencyWalletCurrency } from "@/enums";
-import { useHiveKeysQuery } from "@/queries";
-import { EcencyCreateWalletInformation } from "@/types";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
+import { useHiveKeysQuery } from "@/modules/wallets/queries";
+import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface Payload {

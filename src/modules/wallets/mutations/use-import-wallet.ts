@@ -1,7 +1,7 @@
-import { EcencyWalletCurrency } from "@/enums";
-import { getKeysFromSeed } from "@/functions";
-import { EcencyCreateWalletInformation } from "@/types";
-import { getWallet } from "@/utils";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
+import { getKeysFromSeed } from "@/modules/wallets/functions";
+import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
+import { getWallet } from "@/modules/wallets/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EcencyWalletsPrivateApi } from "./private-api-namespace";
 

@@ -1,4 +1,4 @@
-import { EcencyWalletCurrency } from "@/enums";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { useQuery } from "@tanstack/react-query";
 import { LRUCache } from "lru-cache";
 

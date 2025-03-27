@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EcencyCreateWalletInformation } from "@/types";
-import { EcencyWalletCurrency } from "@/enums";
-import { delay, getWallet } from "@/utils";
-import { useSeedPhrase } from "@/queries";
+import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
+import { delay, getWallet } from "@/modules/wallets/utils";
+import { useSeedPhrase } from "@/modules/wallets/queries";
 
 const PATHS = {
   [EcencyWalletCurrency.BTC]: "m/44'/0'/0'/0/0", // Bitcoin (BIP44)

@@ -1,4 +1,4 @@
-import { EcencyWalletCurrency } from "@/enums";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 
 export interface EcencyCreateWalletInformation {
   address: string;

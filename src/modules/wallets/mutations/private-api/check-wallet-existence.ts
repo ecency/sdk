@@ -1,5 +1,5 @@
 import { CONFIG } from "@/config";
-import { EcencyWalletCurrency } from "@/enums";
+import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { useMutation } from "@tanstack/react-query";
 
 interface Payload {

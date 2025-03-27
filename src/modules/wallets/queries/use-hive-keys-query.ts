@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSeedPhrase } from "./use-seed-phrase";
 import { PrivateKey } from "@hiveio/dhive";
-import { EcencyHiveKeys } from "@/types";
+import { EcencyHiveKeys } from "@/modules/wallets/types";
 
 export function useHiveKeysQuery(username: string) {
   const { data: seed } = useSeedPhrase(username);
