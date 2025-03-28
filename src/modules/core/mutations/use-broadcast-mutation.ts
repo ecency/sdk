@@ -24,13 +24,16 @@ export function useBroadcastMutation<T>(
 
       // With hivesigner access token
       let token = getAccessToken(username);
-      return token
-        ? new hs.Client({
-            accessToken: token,
-          })
-            .broadcast(operations(payload))
-            .then((r: any) => r.result)
-        : Promise.resolve(0);
+      if (token) {
+        const response = await new hs.Client({
+          accessToken: token,
+        }).broadcast(operations(payload));
+        return response.result;
+      }
+
+      throw new Error(
+        "[SDK][Broadcast] – cannot broadcast w/o posting key or token"
+      );
     },
   });
 }

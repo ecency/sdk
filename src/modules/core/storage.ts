@@ -7,8 +7,9 @@ export const getUser = (username: string): StoringUser | undefined => {
     const raw = CONFIG.storage.getItem(
       CONFIG.storagePrefix + "_user_" + username
     );
-    return decodeObj(raw) as StoringUser;
+    return decodeObj(JSON.parse(raw!)) as StoringUser;
   } catch (e) {
+    console.error(e);
     return undefined;
   }
 };
