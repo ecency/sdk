@@ -8,8 +8,10 @@ interface MempoolResponse {
   };
 }
 
-interface EthLlamaRpcResponse {
-  result: number | string; // in wei
+interface EthExplorerResponse {
+  ETH: {
+    balance: number;
+  };
 }
 
 interface SolResponse {
@@ -75,18 +77,12 @@ export function useGetExternalWalletBalanceQuery(
           );
 
         case EcencyWalletCurrency.ETH:
-          const ethResponse = await fetch("https://eth.llamarpc.com", {
-            method: "POST",
-            body: JSON.stringify({
-              jsonrpc: "2.0",
-              id: "1",
-              method: "eth_getBalance",
-              params: [address, "latest"],
-            }),
-          });
+          const ethResponse = await fetch(
+            `https://api.ethplorer.io/getAddressInfo/${address}?apiKey=freekey`
+          );
           const ethResponseData =
-            (await ethResponse.json()) as EthLlamaRpcResponse;
-          return +ethResponseData.result / 1e18;
+            (await ethResponse.json()) as EthExplorerResponse;
+          return +ethResponseData.ETH.balance;
 
         case EcencyWalletCurrency.SOL:
           const solResponse = await fetch(
