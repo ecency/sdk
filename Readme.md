@@ -1,4 +1,4 @@
-# Ecency SD
+# Ecency SDK
 
 [![NPM](https://img.shields.io/npm/v/@ecency/wallets.svg)](https://www.npmjs.com/package/@ecency/wallets) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
