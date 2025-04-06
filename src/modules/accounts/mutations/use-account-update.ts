@@ -4,7 +4,7 @@ export function useAccountUpdate(username: string) {
   return useBroadcastMutation(
     ["accounts", "update"],
     username,
-    ({ newProfile }: any) => {
+    (newProfile: any) => {
       return [
         [
           "account_update2",
