@@ -1,17 +1,17 @@
-# Ecency wallets – manage Hive account and attach external wallets to it in Ecency system
+# Ecency SD
 
 [![NPM](https://img.shields.io/npm/v/@ecency/wallets.svg)](https://www.npmjs.com/package/@ecency/wallets) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Overview
 
-`@ecency/wallets` provides an API for managing Hive blockchain wallets and external cryptocurrency wallets within the Ecency ecosystem.
+`@ecency/sdk` provides an API for managing Hive blockchain wallets and external cryptocurrency wallets within the Ecency ecosystem.
 
 ## Installation
 
 ```sh
-yarn add @ecency/wallets
+yarn add @ecency/sdk
 # or
-npm install @ecency/wallets
+npm install @ecency/sdk
 ```
 
 ## Setup
