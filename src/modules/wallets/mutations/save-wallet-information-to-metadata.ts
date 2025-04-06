@@ -12,7 +12,7 @@ export function useSaveWalletInformationToMetadata(username: string) {
   const { mutateAsync: updateProfile } = useAccountUpdate(username);
 
   return useMutation({
-    mutationKey: ["ecency-wallets", "save-wallet-to-metadata", username],
+    mutationKey: ["ecency-wallets", "save-wallet-to-metadata", username, data],
     mutationFn: () =>
       updateProfile({
         ...Array.from(data?.entries() ?? []).reduce(
