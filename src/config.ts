@@ -24,4 +24,5 @@ export const CONFIG = {
       consoleOnFailover: true,
     }
   ),
+  heliusApiKey: import.meta.env.VITE_HELIUS_API_KEY,
 };

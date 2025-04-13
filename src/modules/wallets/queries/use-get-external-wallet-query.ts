@@ -1,3 +1,4 @@
+import { CONFIG } from "@/config";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { useQuery } from "@tanstack/react-query";
 
@@ -86,7 +87,7 @@ export function useGetExternalWalletBalanceQuery(
 
         case EcencyWalletCurrency.SOL:
           const solResponse = await fetch(
-            "https://api.mainnet-beta.solana.com",
+            `https://rpc.helius.xyz/?api-key=${CONFIG.heliusApiKey}`,
             {
               method: "POST",
               body: JSON.stringify({
@@ -95,6 +96,9 @@ export function useGetExternalWalletBalanceQuery(
                 method: "getBalance",
                 params: [address],
               }),
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
           );
           const solResponseData = (await solResponse.json()) as SolResponse;
