@@ -6,12 +6,18 @@ import hs from "hivesigner";
 
 export function useBroadcastMutation<T>(
   mutationKey: Parameters<typeof useMutation>[0]["mutationKey"] = [],
-  username: string,
+  username: string | undefined,
   operations: (payload: T) => Operation[]
 ) {
   return useMutation({
     mutationKey: [...mutationKey, username],
     mutationFn: async (payload: T) => {
+      if (!username) {
+        throw new Error(
+          "[Core][Broadcast] Attempted to call broadcast API with anon user"
+        );
+      }
+
       const postingKey = getPostingKey(username);
       if (postingKey) {
         const privateKey = PrivateKey.fromString(postingKey);
