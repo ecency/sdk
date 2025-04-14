@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+        env:
+          VITE_HELIUS_API_KEY: ${{secrets.VITE_HELIUS_API_KEY}}
         with:
           node-version: 20
       - run: yarn
