@@ -6,7 +6,7 @@ export function useSignOperationByKeychain(
   username: string | undefined,
   keyType: Keychain.KeychainAuthorityTypes = "Active"
 ) {
-  useMutation({
+  return useMutation({
     mutationKey: ["operations", "sign-keychain", username],
     mutationFn: ({ operation }: { operation: Operation }) => {
       if (!username) {
