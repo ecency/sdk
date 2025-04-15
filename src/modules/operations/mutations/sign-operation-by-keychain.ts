@@ -14,7 +14,7 @@ export function useSignOperationByKeychain(
           "[SDK][Keychain] – cannot sign operation with anon user"
         );
       }
-      return Keychain.broadcast(username, [operation], keyType);
+      return Keychain.broadcast(username, [operation], keyType) as Promise<any>;
     },
   });
 }
