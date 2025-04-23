@@ -42,5 +42,5 @@ export default defineConfig({
       "near-api-js": "near-api-js/dist/near-api-js.js",
     },
   },
-  plugins: [react(), dtsPlugin({ rollupTypes: true }), nodePolyfills()],
+  plugins: [react(), dtsPlugin(), nodePolyfills()],
 });
