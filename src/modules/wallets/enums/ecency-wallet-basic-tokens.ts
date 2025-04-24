@@ -1,8 +1,7 @@
 export enum EcencyWalletBasicTokens {
-  Points,
-  HivePower,
-  Hive,
-  HiveDollar,
-  Leo,
-  Spk,
+  Points = "POINTS",
+  HivePower = "HP",
+  Hive = "HIVE",
+  HiveDollar = "HBD",
+  Spk = "SPK",
 }
