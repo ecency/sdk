@@ -1,1 +1,1 @@
-export * from "./search-accounts-by-username-query-options";
+export * from "./get-account-full-query-options";
