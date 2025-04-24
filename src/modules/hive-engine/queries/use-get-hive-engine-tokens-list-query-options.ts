@@ -1,5 +1,5 @@
 import { CONFIG } from "@/config";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { HiveEngineListResponse } from "../types";
 
 export function getHiveEngineTokensListQueryOptions(
