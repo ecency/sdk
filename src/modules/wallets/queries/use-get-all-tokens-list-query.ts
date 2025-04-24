@@ -1,12 +1,12 @@
 import { getHiveEngineTokensListQueryOptions } from "@/modules/hive-engine";
-import { useCallback } from "react";
-import { EcencyWalletBasicTokens, EcencyWalletCurrency } from "../enums";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { EcencyWalletBasicTokens, EcencyWalletCurrency } from "../enums";
 
 export function useGetAllTokensListQuery(query: string) {
   const { data } = useQuery(getHiveEngineTokensListQueryOptions());
 
-  return useCallback(
+  return useMemo(
     () => ({
       basic: [
         EcencyWalletBasicTokens.Points,
