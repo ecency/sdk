@@ -10,7 +10,6 @@ export function useGetAccountWalletListQuery(username: string) {
         EcencyWalletBasicTokens.Hive,
         EcencyWalletBasicTokens.HivePower,
         EcencyWalletBasicTokens.HiveDollar,
-        EcencyWalletBasicTokens.Leo,
         EcencyWalletBasicTokens.Spk,
       ];
       return basicTokensList;
