@@ -17,6 +17,7 @@ export function useSaveWalletInformationToMetadata(username: string) {
         profile: {},
         tokens: Array.from(wallets.entries() ?? []).map(([curr, info]) => ({
           symbol: curr,
+          type: "CHAIN",
           meta: {
             address: info.address,
           },
