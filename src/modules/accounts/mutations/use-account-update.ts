@@ -4,7 +4,13 @@ export function useAccountUpdate(username: string) {
   return useBroadcastMutation(
     ["accounts", "update"],
     username,
-    (newProfile: any) => {
+    ({
+      profile,
+      tokens,
+    }: {
+      profile: Record<string, any>;
+      tokens: { symbol: string; meta: { address: string } }[];
+    }) => {
       return [
         [
           "account_update2",
@@ -12,7 +18,8 @@ export function useAccountUpdate(username: string) {
             account: username,
             json_metadata: "",
             posting_json_metadata: JSON.stringify({
-              profile: { ...newProfile, version: 2 },
+              profile: { ...profile, version: 2 },
+              tokens,
             }),
             extensions: [],
           },
