@@ -13,14 +13,14 @@ export function useSaveWalletInformationToMetadata(username: string) {
     }: {
       wallets: Map<EcencyWalletCurrency, EcencyCreateWalletInformation>;
     }) =>
-      updateProfile(
-        Array.from(wallets.entries() ?? []).reduce(
-          (acc, [curr, info]) => ({
-            ...acc,
-            [curr]: info.address,
-          }),
-          {}
-        )
-      ),
+      updateProfile({
+        profile: {},
+        tokens: Array.from(wallets.entries() ?? []).map(([curr, info]) => ({
+          symbol: curr,
+          meta: {
+            address: info.address,
+          },
+        })),
+      }),
   });
 }

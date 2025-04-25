@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { EcencyWalletBasicTokens } from "../enums";
 
 export function getAccountWalletListQueryOptions(username: string) {
