@@ -1,8 +1,10 @@
 import { Client } from "@hiveio/dhive";
+import { MockStorage } from "./modules/wallets/utils/mock-storage";
 
 export const CONFIG = {
   privateApiHost: "https://ecency.com",
-  storage: localStorage,
+  storage:
+    typeof window === "undefined" ? new MockStorage() : window.localStorage,
   storagePrefix: "ecency",
   hiveClient: new Client(
     [
