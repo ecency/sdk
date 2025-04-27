@@ -1,0 +1,16 @@
+export enum EcencyWalletCurrency {
+  BTC = "BTC",
+  ETH = "ETH",
+  APT = "APT",
+  ATOM = "ATOM",
+  TON = "TON",
+  TRON = "TRX",
+  SOL = "SOL",
+  // DOGE = "doge",
+  // LTC = "litecoin",
+  // ADA = "cardano",
+  // STX = "stacks",
+  // NEAR = "near",
+  // EOS = "eos",
+  // SUI = "sui",
+}

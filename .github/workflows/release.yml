@@ -13,11 +13,18 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 20
+      - run: cd ./packages/core
       - name: Create .env file
         run: |
           echo "VITE_HELIUS_API_KEY=${{ secrets.VITE_HELIUS_API_KEY }}" >> .env
+      - run: cd ../../
       - run: yarn
       - run: yarn build
+      - run: cd ./packages/core
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+      - run: cd ../wallets
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
