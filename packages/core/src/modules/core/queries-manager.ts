@@ -1,6 +1,5 @@
 import {
   InfiniteData,
-  isServer,
   QueryClient,
   QueryKey,
   useInfiniteQuery,
@@ -8,7 +7,7 @@ import {
   useQuery,
   UseQueryOptions,
 } from "@tanstack/react-query";
-import { cache } from "react";
+import { CONFIG } from "./config";
 
 export function makeQueryClient() {
   // Cache creates one single instance per request in a server side
@@ -24,9 +23,7 @@ export function makeQueryClient() {
     },
   });
 }
-export const getQueryClient = isServer
-  ? cache(() => makeQueryClient())
-  : () => makeQueryClient();
+export const getQueryClient = () => CONFIG.queryClient;
 
 export namespace EcencyQueriesManager {
   export function getQueryData<T>(queryKey: QueryKey) {

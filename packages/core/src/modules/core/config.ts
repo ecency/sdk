@@ -1,5 +1,6 @@
 import { Client } from "@hiveio/dhive";
 import { MockStorage } from "./mock-storage";
+import { QueryClient } from "@tanstack/react-query";
 
 export const CONFIG = {
   privateApiHost: "https://ecency.com",
@@ -27,4 +28,11 @@ export const CONFIG = {
     }
   ),
   heliusApiKey: import.meta.env.VITE_HELIUS_API_KEY,
+  queryClient: new QueryClient(),
 };
+
+export namespace ConfigManager {
+  export function setQueryClient(client: QueryClient) {
+    CONFIG.queryClient = client;
+  }
+}
