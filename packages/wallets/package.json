@@ -1,7 +1,7 @@
 {
   "name": "@ecency/wallets",
   "private": false,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "license": "MIT",
   "main": "./dist/ecency-sdk.umd.js",
@@ -31,7 +31,7 @@
     "vite-plugin-node-polyfills": "^0.23.0"
   },
   "dependencies": {
-    "@ecency/sdk": "./packages/core",
+    "@ecency/sdk": "1.0.26",
     "@okxweb3/coin-aptos": "^1.2.0",
     "@okxweb3/coin-base": "^1.1.2",
     "@okxweb3/coin-bitcoin": "^1.2.0",

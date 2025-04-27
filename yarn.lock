@@ -244,16 +244,6 @@
   dependencies:
     long "~3"
 
-"@ecency/sdk@./packages/core":
-  version "1.0.25"
-  dependencies:
-    "@hiveio/dhive" "^1.3.2"
-    "@tanstack/react-query" "^5.74.4"
-    bip39 "^3.1.0"
-    hivesigner "3.3.4"
-    lru-cache "^11.0.2"
-    react "^19.0.0"
-
 "@esbuild/aix-ppc64@0.25.3":
   version "0.25.3"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.3.tgz#014180d9a149cffd95aaeead37179433f5ea5437"
