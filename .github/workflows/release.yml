@@ -14,17 +14,25 @@ jobs:
         with:
           node-version: 20
       - run: cd ./packages/core
+
       - name: Create .env file
         run: |
           echo "VITE_HELIUS_API_KEY=${{ secrets.VITE_HELIUS_API_KEY }}" >> .env
+
       - run: cd ../../
       - run: yarn
       - run: yarn build
-      - run: cd ./packages/core
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-      - run: cd ../wallets
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @ecency/sdk
+        run: |
+          cd packages/core
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @ecency/sdk-wallets
+        run: |
+          cd packages/wallets
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
