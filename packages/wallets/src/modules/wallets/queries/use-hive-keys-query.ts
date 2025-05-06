@@ -8,6 +8,7 @@ export function useHiveKeysQuery(username: string) {
 
   return useQuery({
     queryKey: ["ecencу-wallets", "hive-keys", username, seed],
+    staleTime: Infinity,
     queryFn: async () => {
       if (!seed) {
         throw new Error("[Ecency][Wallets] - no seed to create Hive account");
