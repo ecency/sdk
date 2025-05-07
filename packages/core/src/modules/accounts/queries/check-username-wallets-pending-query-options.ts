@@ -17,8 +17,7 @@ export function checkUsernameWalletsPendingQueryOptions(username: string) {
           }),
         }
       );
-      const data = await response.json();
-      return data.length === 0;
+      return (await response.json()) as { exists: boolean };
     },
     enabled: !!username,
     refetchOnMount: true,
