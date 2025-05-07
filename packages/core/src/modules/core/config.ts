@@ -29,6 +29,7 @@ export const CONFIG = {
   ),
   heliusApiKey: import.meta.env.VITE_HELIUS_API_KEY,
   queryClient: new QueryClient(),
+  plausibleHost: "https://pl.ecency.com",
 };
 
 export namespace ConfigManager {
