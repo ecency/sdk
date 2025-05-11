@@ -5,7 +5,10 @@ type ActivityType =
   | "post-created"
   | "post-updated"
   | "post-scheduled"
-  | "draft-created";
+  | "draft-created"
+  | "video-published"
+  | "signed-up-with-wallets"
+  | "signed-up-with-email";
 
 export function useRecordActivity(
   username: string | undefined,
