@@ -6,3 +6,4 @@ export * from "./modules/keychain";
 export * from "./modules/posts";
 export * from "./modules/analytics";
 export * from "./modules/integrations";
+export * from "./modules/resource-credits";
