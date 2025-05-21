@@ -4,3 +4,4 @@ export * from "./use-coingecko-price-query";
 export * from "./use-hive-keys-query";
 export * from "./get-account-points-query-options";
 export * from "./use-get-all-tokens-list-query";
+export * from "./use-get-account-wallet-list-query";
