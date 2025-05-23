@@ -30,6 +30,7 @@ export const CONFIG = {
   heliusApiKey: import.meta.env.VITE_HELIUS_API_KEY,
   queryClient: new QueryClient(),
   plausibleHost: "https://pl.ecency.com",
+  spkNode: "https://spk.good-karma.xyz",
 };
 
 export namespace ConfigManager {

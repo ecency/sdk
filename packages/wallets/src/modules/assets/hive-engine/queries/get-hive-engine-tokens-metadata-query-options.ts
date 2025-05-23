@@ -1,13 +1,10 @@
-import { CONFIG } from "@/modules/core/config";
+import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { HiveEngineListResponse } from "../types";
+import { HiveEngineTokenMetadataResponse } from "../types";
 
-export function getHiveEngineTokensListQueryOptions(
-  username?: string,
-  symbol?: string
-) {
+export function getHiveEngineTokensMetadataQueryOptions(tokens: string[]) {
   return queryOptions({
-    queryKey: ["hive-engine", "tokens-list", username, symbol],
+    queryKey: ["assets", "hive-engine", "metadata-list", tokens],
     queryFn: async () => {
       const response = await fetch(
         `${CONFIG.privateApiHost}/private-api/engine-api`,
@@ -17,19 +14,20 @@ export function getHiveEngineTokensListQueryOptions(
             jsonrpc: "2.0",
             method: "find",
             params: {
-              contract: "market",
-              table: "metrics",
+              contract: "tokens",
+              table: "tokens",
               query: {
-                symbol: symbol,
-                account: username,
+                symbol: { $in: tokens },
               },
             },
-            id: 1,
+            id: 2,
           }),
           headers: { "Content-type": "application/json" },
         }
       );
-      const data = (await response.json()) as HiveEngineListResponse;
+      const data = (await response.json()) as {
+        result: HiveEngineTokenMetadataResponse[];
+      };
       return data.result;
     },
   });

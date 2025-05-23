@@ -92,6 +92,22 @@ export function getHivePowerAssetGeneralInfoQueryOptions(username: string) {
           dynamicProps.hivePerMVests
         ).toFixed(3),
         apr: getAPR(dynamicProps),
+        parts: [
+          {
+            name: "delegating",
+            balance: +vestsToHp(
+              parseAsset(accountData.delegated_vesting_shares).amount,
+              dynamicProps.hivePerMVests
+            ).toFixed(3),
+          },
+          {
+            name: "received",
+            balance: +vestsToHp(
+              parseAsset(accountData.received_vesting_shares).amount,
+              dynamicProps.hivePerMVests
+            ).toFixed(3),
+          },
+        ],
       } satisfies GeneralAssetInfo;
     },
   });

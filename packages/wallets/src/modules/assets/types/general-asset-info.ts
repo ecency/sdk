@@ -4,6 +4,7 @@ export interface GeneralAssetInfo {
   price: number;
   accountBalance: number;
   apr?: string;
+  layer?: string;
   parts?: {
     name: string;
     balance: number;
