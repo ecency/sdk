@@ -2,11 +2,27 @@ import { CONFIG } from "@/modules/core";
 import { useMutation } from "@tanstack/react-query";
 
 type ActivityType =
+  // Editor related
   | "post-created"
   | "post-updated"
   | "post-scheduled"
   | "draft-created"
   | "video-published"
+
+  // Legacy editor related
+  | "legacy-post-created"
+  | "legacy-post-updated"
+  | "legacy-post-scheduled"
+  | "legacy-draft-created"
+  | "legacy-video-published"
+
+  // Perks related
+  | "perks-points-by-qr"
+  | "perks-account-boost"
+  | "perks-promote"
+  | "perks-boost-plus"
+
+  // Signup related
   | "signed-up-with-wallets"
   | "signed-up-with-email";
 
