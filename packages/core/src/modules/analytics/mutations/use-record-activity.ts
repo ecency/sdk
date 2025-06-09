@@ -21,6 +21,7 @@ type ActivityType =
   | "perks-account-boost"
   | "perks-promote"
   | "perks-boost-plus"
+  | "points-claimed"
 
   // Signup related
   | "signed-up-with-wallets"
