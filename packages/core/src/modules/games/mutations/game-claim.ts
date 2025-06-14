@@ -1,12 +1,18 @@
 import { CONFIG, getAccessToken } from "@/modules/core";
 import { useMutation } from "@tanstack/react-query";
 import { GameClaim } from "../types";
+import { useRecordActivity } from "@/modules/analytics/mutations";
 
 export function useGameClaim(
   username: string | undefined,
   gameType: "spin",
   key: string
 ) {
+  const { mutateAsync: recordActivity } = useRecordActivity(
+    username,
+    "spin-rolled"
+  );
+
   return useMutation({
     mutationKey: ["games", "post", gameType, username],
     mutationFn: async () => {
@@ -30,6 +36,9 @@ export function useGameClaim(
       );
 
       return (await response.json()) as GameClaim;
+    },
+    onSuccess() {
+      recordActivity();
     },
   });
 }
