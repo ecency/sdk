@@ -4,9 +4,10 @@ import {
   getHiveAssetGeneralInfoQueryOptions,
   getHivePowerAssetGeneralInfoQueryOptions,
   getLarynxAssetGeneralInfoQueryOptions,
+  getLarynxPowerAssetGeneralInfoQueryOptions,
+  getPointsAssetGeneralInfoQueryOptions,
   getSpkAssetGeneralInfoQueryOptions,
 } from "@/modules/assets";
-import { getLarynxPowerAssetGeneralInfoQueryOptions } from "@/modules/assets/spk/queries/get-larynx-power-asset-general-info-query-options";
 import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 
@@ -58,6 +59,13 @@ export function getAccountWalletAssetInfoQueryOptions(
         );
         return getQueryClient().getQueryData<GeneralAssetInfo>(
           getLarynxPowerAssetGeneralInfoQueryOptions(username).queryKey
+        );
+      } else if (asset === "POINTS") {
+        await getQueryClient().prefetchQuery(
+          getPointsAssetGeneralInfoQueryOptions(username)
+        );
+        return getQueryClient().getQueryData<GeneralAssetInfo>(
+          getPointsAssetGeneralInfoQueryOptions(username).queryKey
         );
       } else {
         throw new Error(

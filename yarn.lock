@@ -244,11 +244,6 @@
   dependencies:
     long "~3"
 
-"@ecency/sdk@1.0.35":
-  version "1.0.35"
-  resolved "https://registry.yarnpkg.com/@ecency/sdk/-/sdk-1.0.35.tgz#cd9054e69aeaf1e72719e5c11565da529f4b429c"
-  integrity sha512-NXKXnyS15s5VlDvU6SwCjkfGQfmaDW+gzDl7tAF5VbRA2rlq62q4RvJbj4CvT5PtyJjgdzpKvrXeIlXw0lEhoA==
-
 "@esbuild/aix-ppc64@0.25.3":
   version "0.25.3"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.3.tgz#014180d9a149cffd95aaeead37179433f5ea5437"
