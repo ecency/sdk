@@ -50,6 +50,8 @@ export function getAllTokensListQueryOptions(query: string) {
           EcencyWalletBasicTokens.HivePower,
           EcencyWalletBasicTokens.HiveDollar,
           EcencyWalletBasicTokens.Spk,
+          "LARYNX",
+          "LP",
         ].filter((token) => token.toLowerCase().includes(query.toLowerCase())),
         external: Object.values(EcencyWalletCurrency).filter((token) =>
           token.toLowerCase().includes(query.toLowerCase())
