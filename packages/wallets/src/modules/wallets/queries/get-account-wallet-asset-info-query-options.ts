@@ -2,6 +2,7 @@ import {
   GeneralAssetInfo,
   getHbdAssetGeneralInfoQueryOptions,
   getHiveAssetGeneralInfoQueryOptions,
+  getHiveEngineTokenGeneralInfoQueryOptions,
   getHivePowerAssetGeneralInfoQueryOptions,
   getLarynxAssetGeneralInfoQueryOptions,
   getLarynxPowerAssetGeneralInfoQueryOptions,
@@ -10,6 +11,7 @@ import {
 } from "@/modules/assets";
 import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
+import { HiveEngineTokens } from "../consts";
 
 export function getAccountWalletAssetInfoQueryOptions(
   username: string,
@@ -66,6 +68,13 @@ export function getAccountWalletAssetInfoQueryOptions(
         );
         return getQueryClient().getQueryData<GeneralAssetInfo>(
           getPointsAssetGeneralInfoQueryOptions(username).queryKey
+        );
+      } else if (HiveEngineTokens.includes(asset)) {
+        await getQueryClient().prefetchQuery(
+          getHiveEngineTokenGeneralInfoQueryOptions(username, asset)
+        );
+        return getQueryClient().getQueryData<GeneralAssetInfo>(
+          getHiveEngineTokenGeneralInfoQueryOptions(username, asset).queryKey
         );
       } else {
         throw new Error(

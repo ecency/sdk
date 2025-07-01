@@ -1,10 +1,10 @@
-import { queryOptions } from "@tanstack/react-query";
-import { HiveEngineMarketResponse } from "../types";
 import { CONFIG } from "@ecency/sdk";
+import { queryOptions } from "@tanstack/react-query";
+import { HiveEngineTokenBalance } from "../types";
 
-export function getHiveEngineTokensMarketQueryOptions() {
+export function getHiveEngineTokensBalancesQueryOptions(username: string) {
   return queryOptions({
-    queryKey: ["assets", "hive-engine", "markets"],
+    queryKey: ["assets", "hive-engine", "balances", username],
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
@@ -16,9 +16,11 @@ export function getHiveEngineTokensMarketQueryOptions() {
             jsonrpc: "2.0",
             method: "find",
             params: {
-              contract: "market",
-              table: "metrics",
-              query: {},
+              contract: "tokens",
+              table: "balances",
+              query: {
+                account: username,
+              },
             },
             id: 1,
           }),
@@ -26,7 +28,7 @@ export function getHiveEngineTokensMarketQueryOptions() {
         }
       );
       const data = (await response.json()) as {
-        result: HiveEngineMarketResponse[];
+        result: HiveEngineTokenBalance[];
       };
       return data.result;
     },

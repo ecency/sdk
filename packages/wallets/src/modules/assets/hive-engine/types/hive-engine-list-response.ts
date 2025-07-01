@@ -1,4 +1,4 @@
-export interface HiveEngineListResponseItem {
+export interface HiveEngineMarketResponse {
   _id: number;
   symbol: string;
   volume: string;
@@ -10,10 +10,4 @@ export interface HiveEngineListResponseItem {
   lastDayPriceExpiration: number;
   priceChangeHive: string;
   priceChangePercent: string;
-}
-
-export interface HiveEngineListResponse {
-  jsonrpc: string;
-  id: number;
-  result: HiveEngineListResponseItem[];
 }

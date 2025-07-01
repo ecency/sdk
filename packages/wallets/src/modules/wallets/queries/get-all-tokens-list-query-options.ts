@@ -3,33 +3,7 @@ import { HiveEngineTokenMetadataResponse } from "@/modules/assets/hive-engine/ty
 import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { EcencyWalletBasicTokens, EcencyWalletCurrency } from "../enums";
-
-const HiveEngineTokens = [
-  "LEO",
-  "ARCHON",
-  "WAIV",
-  "CHOISM",
-  "CCC",
-  "POB",
-  "PHOTO",
-  "LUV",
-  "ALIVE",
-  "LOLZ",
-  "CENT",
-  "FUN",
-  "VYB",
-  "VKBT",
-  "BUIDL",
-  "NEOXAG",
-  "BEE",
-  "PIMP",
-  "PEPE",
-  "PAY",
-  "SPT",
-  "ONEUP",
-  "SPORTS",
-  "CURE",
-];
+import { HiveEngineTokens } from "../consts";
 
 export function getAllTokensListQueryOptions(query: string) {
   return queryOptions({
