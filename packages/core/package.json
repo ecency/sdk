@@ -1,7 +1,7 @@
 {
   "name": "@ecency/sdk",
   "private": false,
-  "version": "1.0.45",
+  "version": "1.0.46",
   "type": "module",
   "license": "MIT",
   "main": "./dist/ecency-sdk.umd.js",
