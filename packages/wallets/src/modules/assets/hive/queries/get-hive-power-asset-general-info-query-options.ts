@@ -6,7 +6,7 @@ import {
 } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { GeneralAssetInfo } from "../../types";
-import { isEmptyDate, parseAsset, vestsToHp } from "../../utils";
+import { parseAsset, vestsToHp } from "../../utils";
 import { FullAccount } from "@ecency/sdk/dist/modules/accounts/types";
 
 function getAPR(dynamicProps: DynamicProps) {
@@ -70,25 +70,25 @@ export function getHivePowerAssetGeneralInfoQueryOptions(username: string) {
         };
       }
 
-      const nextVestingSharesWithdrawal = !isEmptyDate(
-        accountData.next_vesting_withdrawal
-      )
-        ? Math.min(
-            parseAsset(accountData.vesting_withdraw_rate).amount,
-            (Number(accountData.to_withdraw) - Number(accountData.withdrawn)) /
-              1e6
-          )
-        : 0;
+      // const nextVestingSharesWithdrawal = !isEmptyDate(
+      //   accountData.next_vesting_withdrawal
+      // )
+      //   ? Math.min(
+      //       parseAsset(accountData.vesting_withdraw_rate).amount,
+      //       (Number(accountData.to_withdraw) - Number(accountData.withdrawn)) /
+      //         1e6
+      //     )
+      //   : 0;
 
       return {
         name: "HP",
         title: "Hive Power",
         price: dynamicProps ? dynamicProps.base / dynamicProps.quote : 0,
         accountBalance: +vestsToHp(
-          parseAsset(accountData.vesting_shares).amount -
-            parseAsset(accountData.delegated_vesting_shares).amount +
-            parseAsset(accountData.received_vesting_shares).amount -
-            nextVestingSharesWithdrawal,
+          parseAsset(accountData.vesting_shares).amount,
+          // parseAsset(accountData.delegated_vesting_shares).amount +
+          // parseAsset(accountData.received_vesting_shares).amount -
+          // nextVestingSharesWithdrawal,
           dynamicProps.hivePerMVests
         ).toFixed(3),
         apr: getAPR(dynamicProps),
