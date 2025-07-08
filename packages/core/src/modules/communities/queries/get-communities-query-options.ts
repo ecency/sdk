@@ -19,8 +19,8 @@ export function getCommunitiesQueryOptions(
         {
           last: "",
           limit,
-          sort,
-          query,
+          sort: sort === "hot" ? "rank" : sort,
+          query: query ? query : null,
           observer,
         }
       );
