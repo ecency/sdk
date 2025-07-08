@@ -8,3 +8,4 @@ export * from "./modules/analytics";
 export * from "./modules/integrations";
 export * from "./modules/resource-credits";
 export * from "./modules/games";
+export * from "./modules/communities";

@@ -1,0 +1,30 @@
+import { CONFIG } from "@/modules/core";
+import { queryOptions } from "@tanstack/react-query";
+import { Communities } from "../types";
+
+export function getCommunitiesQueryOptions(
+  sort: string,
+  query?: string,
+  limit = 100,
+  observer: string | undefined = undefined,
+  enabled = true
+) {
+  return queryOptions({
+    queryKey: ["communities", "list", sort, query, limit],
+    enabled,
+    queryFn: async () => {
+      const response = await CONFIG.hiveClient.call(
+        "bridge",
+        "list_communities",
+        {
+          last: "",
+          limit,
+          sort,
+          query,
+          observer,
+        }
+      );
+      return (response ?? []) as Communities;
+    },
+  });
+}
