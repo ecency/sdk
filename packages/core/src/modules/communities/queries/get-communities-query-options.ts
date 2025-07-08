@@ -24,7 +24,13 @@ export function getCommunitiesQueryOptions(
           observer,
         }
       );
-      return (response ?? []) as Communities;
+      return (
+        response
+          ? sort === "hot"
+            ? response.sort(() => Math.random() - 0.5)
+            : response
+          : []
+      ) as Communities;
     },
   });
 }
