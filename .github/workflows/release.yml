@@ -19,8 +19,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Set up .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Create .env file
         run: echo "VITE_HELIUS_API_KEY=${{ secrets.VITE_HELIUS_API_KEY }}" >> .env
@@ -34,18 +33,16 @@ jobs:
       - name: Detect changes in @ecency/sdk
         id: detect_sdk
         run: |
-          git fetch --depth=2 origin ${{ github.ref_name }}
-          if git diff --quiet origin/${{ github.ref_name }}...HEAD -- packages/core; then
+          if git diff --quiet HEAD^ HEAD -- packages/core; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Detect changes in @ecency/sdk-wallets
+      - name: Detect changes in @ecency/wallets
         id: detect_wallets
         run: |
-          git fetch --depth=2 origin ${{ github.ref_name }}
-          if git diff --quiet origin/${{ github.ref_name }}...HEAD -- packages/wallets; then
+          if git diff --quiet HEAD^ HEAD -- packages/wallets; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -57,7 +54,7 @@ jobs:
           cd packages/core
           npm publish --access public
 
-      - name: Publish @ecency/sdk-wallets
+      - name: Publish @ecency/wallets
         if: steps.detect_wallets.outputs.changed == 'true'
         run: |
           cd packages/wallets
