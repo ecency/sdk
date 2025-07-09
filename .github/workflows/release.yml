@@ -1,4 +1,5 @@
 name: Publish to npm
+
 on:
   push:
     branches:
@@ -8,31 +9,65 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
         with:
           node-version: 20
-      - run: cd ./packages/core
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Create .env file
-        run: |
-          echo "VITE_HELIUS_API_KEY=${{ secrets.VITE_HELIUS_API_KEY }}" >> .env
+        run: echo "VITE_HELIUS_API_KEY=${{ secrets.VITE_HELIUS_API_KEY }}" >> .env
 
-      - run: cd ../../
-      - run: yarn
-      - run: yarn build
+      - name: Install dependencies
+        run: yarn
 
-      - name: Authenticate with npm
+      - name: Build all packages
+        run: yarn build
+
+      - name: Detect changes in @ecency/sdk
+        id: detect_sdk
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          if [ "$(git rev-list --count HEAD)" -lt 2 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            if git diff --quiet HEAD^ HEAD -- packages/core; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      
+
+      - name: Detect changes in @ecency/wallets
+        id: detect_wallets
+        run: |
+          if [ "$(git rev-list --count HEAD)" -lt 2 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            if git diff --quiet HEAD^ HEAD -- packages/wallets; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      
+
+      - name: Set up .npmrc
+        run: |
+          echo "@ecency:registry=https://registry.npmjs.org/" > .npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
 
       - name: Publish @ecency/sdk
+        if: steps.detect_sdk.outputs.changed == 'true'
         run: |
           cd packages/core
           npm publish --access public
 
-      - name: Publish @ecency/sdk-wallets
+      - name: Publish @ecency/wallets
+        if: steps.detect_wallets.outputs.changed == 'true'
         run: |
           cd packages/wallets
           npm publish --access public
