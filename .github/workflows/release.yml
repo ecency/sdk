@@ -30,20 +30,30 @@ jobs:
       - name: Detect changes in @ecency/sdk
         id: detect_sdk
         run: |
-          if git diff --quiet HEAD^ HEAD -- packages/core; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
+          if [ "$(git rev-list --count HEAD)" -lt 2 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            if git diff --quiet HEAD^ HEAD -- packages/core; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
           fi
+      
 
       - name: Detect changes in @ecency/wallets
         id: detect_wallets
         run: |
-          if git diff --quiet HEAD^ HEAD -- packages/wallets; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
+          if [ "$(git rev-list --count HEAD)" -lt 2 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            if git diff --quiet HEAD^ HEAD -- packages/wallets; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
           fi
+      
 
       - name: Set up .npmrc
         run: |
