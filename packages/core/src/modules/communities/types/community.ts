@@ -20,6 +20,8 @@ export const roleMap: Record<string, string[]> = {
 };
 
 export type CommunityTeam = Array<Array<string>>;
+export type CommunityRole = (typeof ROLES)[keyof typeof ROLES]; // "owner" | "member" | ...
+export type CommunityType = "Topic" | "Journal" | "Council";
 
 export interface Community {
   about: string;
