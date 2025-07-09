@@ -4,5 +4,6 @@ export interface StoringUser {
   refreshToken: string;
   expiresIn: number;
   postingKey: null | undefined | string;
+  loginType: null | undefined | string;
   index?: number; // index in a list
 }

@@ -5,6 +5,7 @@ on:
       - '*'
 jobs:
   build:
+    if: github.ref_name != 'main'
     runs-on: ubuntu-latest
     strategy:
       matrix:
