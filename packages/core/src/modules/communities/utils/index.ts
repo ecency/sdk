@@ -3,18 +3,12 @@ import { ROLES } from "../types";
 export type CommunityRole = (typeof ROLES)[keyof typeof ROLES]; // "owner" | "member" | ...
 export type CommunityType = "Topic" | "Journal" | "Council";
 
-/**
- * Determine community type based on its `name` or `type_id`
- */
 export function getCommunityType(name: string, type_id: number): CommunityType {
     if (name.startsWith("hive-3") || type_id === 3) return "Council";
     if (name.startsWith("hive-2") || type_id === 2) return "Journal";
     return "Topic";
 }
 
-/**
- * Compute permissions for a given user role in a community
- */
 export function getCommunityPermissions({
     communityType,
     userRole,
