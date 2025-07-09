@@ -3,3 +3,5 @@ export * from "./search-accounts-by-username-query-options";
 export * from "./check-username-wallets-pending-query-options";
 export * from "./get-relationship-between-accounts-query-options";
 export * from "./get-account-subscriptions-query-options";
+export * from "./get-active-account-bookmarks-query-options";
+export * from "./get-active-account-favourites-query-options";
