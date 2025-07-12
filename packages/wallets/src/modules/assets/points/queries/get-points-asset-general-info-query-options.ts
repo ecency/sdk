@@ -17,7 +17,7 @@ export function getPointsAssetGeneralInfoQueryOptions(username: string) {
         name: "POINTS",
         title: "Ecency Points",
         price: 0.002,
-        accountBalance: data?.points,
+        accountBalance: +data?.points,
       } satisfies GeneralAssetInfo;
     },
   });
