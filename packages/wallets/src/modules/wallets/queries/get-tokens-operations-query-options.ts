@@ -24,11 +24,10 @@ export function getTokenOperationsQueryOptions(
           ];
         case EcencyWalletBasicTokens.HivePower:
           return [
-            AssetOperation.Transfer,
             AssetOperation.Delegate,
             ...(isForOwner
               ? [AssetOperation.PowerDown, AssetOperation.WithdrawRoutes]
-              : []),
+              : [AssetOperation.PowerUp]),
           ];
         case EcencyWalletBasicTokens.HiveDollar:
           return [
