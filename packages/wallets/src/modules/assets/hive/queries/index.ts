@@ -4,3 +4,4 @@ export * from "./get-hbd-asset-general-info-query-options";
 export * from "./get-hive-asset-transactions-query-options";
 export * from "./get-hive-power-asset-transactions-query-options";
 export * from "./get-hbd-asset-transactions-query-options";
+export * from "./get-hive-asset-metric-query-options";
