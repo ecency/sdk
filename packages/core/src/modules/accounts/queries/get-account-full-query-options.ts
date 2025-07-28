@@ -32,14 +32,14 @@ export function getAccountFullQueryOptions(username: string) {
       );
 
       return {
-        ...response,
+        ...response[0],
         follow_stats,
         reputation: reputation[0].reputation,
         profile: {
           ...profile,
           reputation: reputation[0].reputation,
         },
-      };
+      } as const;
     },
     enabled: !!username,
     staleTime: 60000,
