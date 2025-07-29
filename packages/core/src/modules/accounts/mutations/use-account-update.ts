@@ -1,14 +1,11 @@
 import { useBroadcastMutation } from "@/modules/core";
 import { useQuery } from "@tanstack/react-query";
 import { getAccountFullQueryOptions } from "../queries";
+import { AccountProfile } from "../types";
 
 interface Payload {
-  profile: Record<string, any>;
+  profile: Partial<AccountProfile>;
   tokens: { symbol: string; meta: { address: string } }[];
-  beneficiary: {
-    username: string;
-    reward: number;
-  };
 }
 
 export function useAccountUpdate(username: string) {
@@ -17,29 +14,22 @@ export function useAccountUpdate(username: string) {
   return useBroadcastMutation(
     ["accounts", "update", data],
     username,
-    ({ profile, tokens, beneficiary }: Partial<Payload>) => {
+    ({ profile, tokens }: Partial<Payload>) => {
+      const metadata = {
+        ...JSON.parse(data?.posting_json_metadata || "{}"),
+        profile: { ...data?.profile, ...profile, version: 2 },
+      };
+
+      if (tokens && tokens.length > 0) {
+        metadata.tokens = tokens;
+      }
+
       return [
         [
           "account_update2",
           {
             account: username,
-            json_metadata: "",
-            posting_json_metadata: JSON.stringify({
-              ...JSON.parse(data?.posting_json_metadata || "{}"),
-              profile: { ...profile, version: 2 },
-              tokens,
-
-              // See https://docs.ecency.com/communities/default-beneficiary/
-              ...(beneficiary
-                ? {
-                    beneficiary: {
-                      account: beneficiary?.username,
-                      weight: beneficiary?.reward,
-                    },
-                  }
-                : {}),
-            }),
-            extensions: [],
+            posting_json_metadata: JSON.stringify(metadata),
           },
         ],
       ];

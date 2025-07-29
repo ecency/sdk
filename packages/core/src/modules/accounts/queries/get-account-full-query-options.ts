@@ -1,5 +1,9 @@
 import { CONFIG } from "@/modules/core/config";
-import { AccountFollowStats, AccountReputation } from "../types";
+import {
+  AccountFollowStats,
+  AccountProfile,
+  AccountReputation,
+} from "../types";
 import { queryOptions } from "@tanstack/react-query";
 
 export function getAccountFullQueryOptions(username: string) {
@@ -15,7 +19,8 @@ export function getAccountFullQueryOptions(username: string) {
         throw new Error("[SDK] No account with given username");
       }
 
-      const profile = JSON.parse(response[0].posting_json_metadata!).profile;
+      const profile = JSON.parse(response[0].posting_json_metadata!)
+        .profile as AccountProfile;
 
       let follow_stats: AccountFollowStats | undefined;
       try {
