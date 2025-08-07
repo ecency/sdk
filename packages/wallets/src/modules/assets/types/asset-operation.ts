@@ -3,11 +3,11 @@ export enum AssetOperation {
   Transfer = "transfer",
 
   // APR
-  TransferToSavings = "transfer_savings",
+  TransferToSavings = "transfer-saving",
   Delegate = "delegate",
-  PowerUp = "power_up",
-  PowerDown = "power_down",
-  WithdrawRoutes = "withdraw_routes",
+  PowerUp = "power-up",
+  PowerDown = "power-down",
+  WithdrawRoutes = "withdraw-saving",
   Swap = "swap",
 
   // Points
@@ -17,5 +17,5 @@ export enum AssetOperation {
   Buy = "buy",
 
   // SPK
-  LockLiquidity = "lock_liquidity",
+  LockLiquidity = "lock",
 }
