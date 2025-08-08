@@ -1,5 +1,7 @@
 import {
   AssetOperation,
+  delegateHive,
+  powerDownHive,
   powerUpHive,
   transferHive,
   transferToSavingsHive,
@@ -15,6 +17,11 @@ const operationToFunctionMap: Record<
     [AssetOperation.Transfer]: transferHive,
     [AssetOperation.TransferToSavings]: transferToSavingsHive,
     [AssetOperation.PowerUp]: powerUpHive,
+  },
+  HP: {
+    [AssetOperation.PowerDown]: powerDownHive,
+    [AssetOperation.Delegate]: delegateHive,
+    [AssetOperation.WithdrawRoutes]: () => {},
   },
 };
 
