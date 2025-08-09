@@ -20,6 +20,10 @@ const operationToFunctionMap: Record<
     [AssetOperation.TransferToSavings]: transferToSavingsHive,
     [AssetOperation.PowerUp]: powerUpHive,
   },
+  HBD: {
+    [AssetOperation.Transfer]: transferHive,
+    [AssetOperation.TransferToSavings]: transferToSavingsHive,
+  },
   HP: {
     [AssetOperation.PowerDown]: powerDownHive,
     [AssetOperation.Delegate]: delegateHive,
