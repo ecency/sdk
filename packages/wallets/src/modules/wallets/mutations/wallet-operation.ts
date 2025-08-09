@@ -5,6 +5,7 @@ import {
   powerUpHive,
   transferHive,
   transferToSavingsHive,
+  withdrawVestingRouteHive,
 } from "@/modules/assets";
 import { EcencyAnalytics } from "@ecency/sdk";
 import { useMutation } from "@tanstack/react-query";
@@ -21,7 +22,7 @@ const operationToFunctionMap: Record<
   HP: {
     [AssetOperation.PowerDown]: powerDownHive,
     [AssetOperation.Delegate]: delegateHive,
-    [AssetOperation.WithdrawRoutes]: () => {},
+    [AssetOperation.WithdrawRoutes]: withdrawVestingRouteHive,
   },
 };
 
