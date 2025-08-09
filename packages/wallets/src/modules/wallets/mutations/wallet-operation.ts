@@ -4,6 +4,7 @@ import {
   powerDownHive,
   powerUpHive,
   transferHive,
+  transferPoint,
   transferToSavingsHive,
   withdrawVestingRouteHive,
 } from "@/modules/assets";
@@ -23,6 +24,9 @@ const operationToFunctionMap: Record<
     [AssetOperation.PowerDown]: powerDownHive,
     [AssetOperation.Delegate]: delegateHive,
     [AssetOperation.WithdrawRoutes]: withdrawVestingRouteHive,
+  },
+  POINTS: {
+    [AssetOperation.Gift]: transferPoint,
   },
 };
 
