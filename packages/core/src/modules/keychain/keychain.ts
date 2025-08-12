@@ -42,3 +42,28 @@ export const broadcast = (
       rpc
     );
   });
+
+export const customJson = (
+  account: string,
+  id: string,
+  key: KeychainAuthorityTypes,
+  json: string,
+  display_msg: string,
+  rpc: string | null = null
+): Promise<TxResponse> =>
+  new Promise<TxResponse>((resolve, reject) => {
+    window.hive_keychain?.requestCustomJson(
+      account,
+      id,
+      key,
+      json,
+      display_msg,
+      (resp: TxResponse) => {
+        if (!resp.success) {
+          reject({ message: "Operation cancelled" });
+        }
+        resolve(resp);
+      },
+      rpc
+    );
+  });

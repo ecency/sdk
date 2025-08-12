@@ -1,13 +1,17 @@
 import {
   AssetOperation,
   delegateHive,
+  lockLarynx,
+  lockLarynxByKey,
   powerDownHive,
   powerUpHive,
   transferHive,
   transferPoint,
+  transferSpk,
   transferToSavingsHive,
   withdrawVestingRouteHive,
 } from "@/modules/assets";
+import { powerUpLarynx } from "@/modules/assets/spk/mutations/power-up";
 import { EcencyAnalytics } from "@ecency/sdk";
 import { useMutation } from "@tanstack/react-query";
 
@@ -31,6 +35,13 @@ const operationToFunctionMap: Record<
   },
   POINTS: {
     [AssetOperation.Gift]: transferPoint,
+  },
+  SPK: {
+    [AssetOperation.Transfer]: transferSpk,
+  },
+  LARYNX: {
+    [AssetOperation.LockLiquidity]: lockLarynx,
+    [AssetOperation.PowerUp]: powerUpLarynx,
   },
 };
 
