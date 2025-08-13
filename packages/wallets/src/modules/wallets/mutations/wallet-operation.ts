@@ -2,7 +2,6 @@ import {
   AssetOperation,
   delegateHive,
   lockLarynx,
-  lockLarynxByKey,
   powerDownHive,
   powerUpHive,
   transferHive,
