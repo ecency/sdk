@@ -18,4 +18,8 @@ export enum AssetOperation {
 
   // SPK
   LockLiquidity = "lock",
+
+  // Layer 2
+  Stake = "stake",
+  Unstake = "unstake",
 }

@@ -1,6 +1,11 @@
+import {
+  AssetOperation,
+  getHiveEngineTokensBalancesQueryOptions,
+  HiveEngineTokenMetadataResponse,
+} from "@/modules/assets";
+import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { EcencyWalletBasicTokens } from "../enums";
-import { AssetOperation } from "@/modules/assets";
 
 export function getTokenOperationsQueryOptions(
   token: string,
@@ -9,7 +14,7 @@ export function getTokenOperationsQueryOptions(
 ) {
   return queryOptions({
     queryKey: ["wallets", "token-operations", token, username, isForOwner],
-    queryFn: () => {
+    queryFn: async () => {
       switch (token) {
         case EcencyWalletBasicTokens.Hive:
           return [
@@ -62,6 +67,23 @@ export function getTokenOperationsQueryOptions(
             ...(isForOwner ? [AssetOperation.PowerDown] : []),
           ];
       }
+
+      const marketQuery = getHiveEngineTokensBalancesQueryOptions(username);
+      await getQueryClient().prefetchQuery(marketQuery);
+      const marketList = getQueryClient().getQueryData<
+        HiveEngineTokenMetadataResponse[]
+      >(marketQuery.queryKey);
+
+      const tokenInfo = marketList?.find((m) => m.symbol === token);
+      return [
+        AssetOperation.Transfer,
+        ...(isForOwner && tokenInfo?.delegationEnabled
+          ? [AssetOperation.Delegate]
+          : []),
+        ...(isForOwner && tokenInfo?.stakingEnabled
+          ? [AssetOperation.Stake, AssetOperation.Unstake]
+          : []),
+      ];
     },
   });
 }
