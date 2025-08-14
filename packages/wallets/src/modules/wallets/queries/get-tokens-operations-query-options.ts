@@ -1,6 +1,8 @@
 import {
   AssetOperation,
   getHiveEngineTokensBalancesQueryOptions,
+  getHiveEngineTokensMetadataQueryOptions,
+  HiveEngineTokenBalance,
   HiveEngineTokenMetadataResponse,
 } from "@/modules/assets";
 import { getQueryClient } from "@ecency/sdk";
@@ -68,21 +70,42 @@ export function getTokenOperationsQueryOptions(
           ];
       }
 
-      const marketQuery = getHiveEngineTokensBalancesQueryOptions(username);
-      await getQueryClient().prefetchQuery(marketQuery);
-      const marketList = getQueryClient().getQueryData<
-        HiveEngineTokenMetadataResponse[]
-      >(marketQuery.queryKey);
+      const balancesListQuery =
+        getHiveEngineTokensBalancesQueryOptions(username);
+      await getQueryClient().prefetchQuery(balancesListQuery);
+      const balances = getQueryClient().getQueryData<HiveEngineTokenBalance[]>(
+        balancesListQuery.queryKey
+      );
 
-      const tokenInfo = marketList?.find((m) => m.symbol === token);
+      const tokensQuery = getHiveEngineTokensMetadataQueryOptions(
+        balances?.map((b) => b.symbol) ?? []
+      );
+      await getQueryClient().prefetchQuery(tokensQuery);
+      const tokens = getQueryClient().getQueryData<
+        HiveEngineTokenMetadataResponse[]
+      >(tokensQuery.queryKey);
+
+      const balanceInfo = balances?.find((m) => m.symbol === token);
+      const tokenInfo = tokens?.find((t) => t.symbol === token);
+
+      const canDelegate =
+        isForOwner &&
+        tokenInfo?.delegationEnabled &&
+        balanceInfo &&
+        parseFloat(balanceInfo.delegationsOut) !==
+          parseFloat(balanceInfo.balance);
+      const canUndelegate =
+        isForOwner && parseFloat(balanceInfo?.delegationsOut ?? "0") > 0;
+
+      const canStake = isForOwner && tokenInfo?.stakingEnabled;
+      const canUnstake =
+        isForOwner && parseFloat(balanceInfo?.stake ?? "0") > 0;
       return [
         AssetOperation.Transfer,
-        ...(isForOwner && tokenInfo?.delegationEnabled
-          ? [AssetOperation.Delegate]
-          : []),
-        ...(isForOwner && tokenInfo?.stakingEnabled
-          ? [AssetOperation.Stake, AssetOperation.Unstake]
-          : []),
+        ...(canDelegate ? [AssetOperation.Delegate] : []),
+        ...(canUndelegate ? [AssetOperation.Undelegate] : []),
+        ...(canStake ? [AssetOperation.Stake] : []),
+        ...(canUnstake ? [AssetOperation.Unstake] : []),
       ];
     },
   });

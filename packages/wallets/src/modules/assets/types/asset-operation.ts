@@ -22,4 +22,5 @@ export enum AssetOperation {
   // Layer 2
   Stake = "stake",
   Unstake = "unstake",
+  Undelegate = "undelegate",
 }
