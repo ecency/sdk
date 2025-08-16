@@ -13,68 +13,47 @@ import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { HiveEngineTokens } from "../consts";
 
+interface Options {
+  refetch: boolean;
+}
+
 export function getAccountWalletAssetInfoQueryOptions(
   username: string,
-  asset: string
+  asset: string,
+  options: Options = { refetch: false }
 ) {
+  // Helper function to handle both prefetch and refetch cases
+  const fetchQuery = async (queryOptions: any) => {
+    if (options.refetch) {
+      await getQueryClient().fetchQuery(queryOptions);
+    } else {
+      await getQueryClient().prefetchQuery(queryOptions);
+    }
+    return getQueryClient().getQueryData<GeneralAssetInfo>(
+      queryOptions.queryKey
+    );
+  };
+
   return queryOptions({
     queryKey: ["ecency-wallets", "asset-info", username, asset],
     queryFn: async () => {
       if (asset === "HIVE") {
-        await getQueryClient().prefetchQuery(
-          getHiveAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getHiveAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getHiveAssetGeneralInfoQueryOptions(username));
       } else if (asset === "HP") {
-        await getQueryClient().prefetchQuery(
-          getHivePowerAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getHivePowerAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getHivePowerAssetGeneralInfoQueryOptions(username));
       } else if (asset === "HBD") {
-        await getQueryClient().prefetchQuery(
-          getHbdAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getHbdAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getHbdAssetGeneralInfoQueryOptions(username));
       } else if (asset === "SPK") {
-        await getQueryClient().prefetchQuery(
-          getSpkAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getSpkAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getSpkAssetGeneralInfoQueryOptions(username));
       } else if (asset === "LARYNX") {
-        await getQueryClient().prefetchQuery(
-          getLarynxAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getLarynxAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getLarynxAssetGeneralInfoQueryOptions(username));
       } else if (asset === "LP") {
-        await getQueryClient().prefetchQuery(
-          getLarynxPowerAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getLarynxPowerAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getLarynxPowerAssetGeneralInfoQueryOptions(username));
       } else if (asset === "POINTS") {
-        await getQueryClient().prefetchQuery(
-          getPointsAssetGeneralInfoQueryOptions(username)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getPointsAssetGeneralInfoQueryOptions(username).queryKey
-        );
+        return fetchQuery(getPointsAssetGeneralInfoQueryOptions(username));
       } else if (HiveEngineTokens.includes(asset)) {
-        await getQueryClient().prefetchQuery(
+        return await fetchQuery(
           getHiveEngineTokenGeneralInfoQueryOptions(username, asset)
-        );
-        return getQueryClient().getQueryData<GeneralAssetInfo>(
-          getHiveEngineTokenGeneralInfoQueryOptions(username, asset).queryKey
         );
       } else {
         throw new Error(

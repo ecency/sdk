@@ -31,7 +31,7 @@ export async function transferPoint<T extends PointsSignType>({
       json: JSON.stringify({
         sender: from,
         receiver: to,
-        amount,
+        amount: amount.replace("POINTS", "POINT"),
         memo,
       }),
       required_auths: [from],

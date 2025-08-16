@@ -16,10 +16,11 @@ import {
   undelegateEngineToken,
   unstakeEngineToken,
   withdrawVestingRouteHive,
+  powerUpLarynx,
 } from "@/modules/assets";
-import { powerUpLarynx } from "@/modules/assets/spk/mutations/power-up";
 import { EcencyAnalytics, getQueryClient } from "@ecency/sdk";
 import { useMutation } from "@tanstack/react-query";
+import { getAccountWalletAssetInfoQueryOptions } from "../queries";
 
 const operationToFunctionMap: Record<
   string,
@@ -72,10 +73,6 @@ export function useWalletOperation(
   return useMutation({
     mutationKey: ["ecency-wallets", asset, operation],
     mutationFn: async (payload: Record<string, unknown>) => {
-      if (asset !== "HIVE") {
-        throw new Error(`Unsupported asset: ${asset}`);
-      }
-
       const operationFn = operationToFunctionMap[asset][operation];
       if (operationFn) {
         return operationFn(payload);
@@ -100,6 +97,19 @@ export function useWalletOperation(
     },
     onSuccess: () => {
       recordActivity();
+
+      const query = getAccountWalletAssetInfoQueryOptions(username, asset, {
+        refetch: true,
+      });
+
+      // Give a some time to blockchain
+      setTimeout(
+        () =>
+          getQueryClient().invalidateQueries({
+            queryKey: query.queryKey,
+          }),
+        5000
+      );
     },
   });
 }
