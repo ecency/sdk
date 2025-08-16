@@ -6,6 +6,7 @@ export interface AccountProfile {
   profile_image?: string;
   website?: string;
   pinned?: string;
+  reputation?: number;
 
   // Community's default beneficiary settings
   beneficiary?: {

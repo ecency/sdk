@@ -1,5 +1,10 @@
 import { CONFIG } from "@/modules/core/config";
-import { AccountFollowStats, AccountReputation, FullAccount } from "../types";
+import {
+  AccountFollowStats,
+  AccountProfile,
+  AccountReputation,
+  FullAccount,
+} from "../types";
 import { queryOptions } from "@tanstack/react-query";
 
 export function getAccountFullQueryOptions(username: string) {
