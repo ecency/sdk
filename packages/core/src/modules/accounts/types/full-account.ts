@@ -1,16 +1,6 @@
 import { Authority } from "@hiveio/dhive";
 import { AccountFollowStats } from "./account-follow-stats";
 
-export interface AccountProfile {
-  about?: string;
-  cover_image?: string;
-  location?: string;
-  name?: string;
-  profile_image?: string;
-  website?: string;
-  pinned?: string;
-}
-
 export interface FullAccount {
   name: string;
   owner: Authority;
