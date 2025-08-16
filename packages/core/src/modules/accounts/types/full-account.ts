@@ -1,5 +1,6 @@
 import { Authority } from "@hiveio/dhive";
 import { AccountFollowStats } from "./account-follow-stats";
+import { AccountProfile } from "./account-profile";
 
 export interface FullAccount {
   name: string;
