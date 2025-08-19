@@ -1,7 +1,7 @@
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import { HiveMarketMetric } from "../types";
 import { CONFIG } from "@ecency/sdk";
-import { addSeconds, formatISO } from "date-fns";
+import dayjs from "dayjs";
 
 export function getHiveAssetMetricQueryOptions(bucketSeconds = 86_400) {
   return infiniteQueryOptions({
@@ -12,9 +12,9 @@ export function getHiveAssetMetricQueryOptions(bucketSeconds = 86_400) {
         "get_market_history",
         [
           bucketSeconds,
-          formatISO(startDate).split("+")[0],
-          formatISO(endDate).split("+")[0],
-        ]
+          dayjs(startDate).format("YYYY-MM-DDTHH:mm:ss"),
+          dayjs(endDate).format("YYYY-MM-DDTHH:mm:ss"),
+        ],
       );
 
       return apiData.map(({ hive, non_hive, open }) => ({
@@ -28,15 +28,16 @@ export function getHiveAssetMetricQueryOptions(bucketSeconds = 86_400) {
     },
     initialPageParam: [
       // Fetch at least 8 hours or given interval
-      addSeconds(new Date(), -Math.max(100 * bucketSeconds, 28_800)),
+      dayjs()
+        .subtract(Math.max(100 * bucketSeconds, 28_800), "second")
+        .toDate(),
       new Date(),
     ],
     getNextPageParam: (_, __, [prevStartDate]) => [
-      addSeconds(
-        new Date(prevStartDate.getTime()),
-        -Math.max(100 * bucketSeconds, 28_800)
-      ),
-      addSeconds(new Date(prevStartDate.getTime()), -bucketSeconds),
+      dayjs(prevStartDate.getTime())
+        .subtract(Math.max(100 * bucketSeconds, 28_800), "second")
+        .toDate(),
+      dayjs(prevStartDate.getTime()).subtract(bucketSeconds, "second").toDate(),
     ],
   });
 }

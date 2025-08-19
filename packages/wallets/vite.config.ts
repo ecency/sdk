@@ -34,7 +34,7 @@ export default defineConfig({
         "@okxweb3/crypto-lib",
         "bip39",
         "hivesigner",
-        "date-fns",
+        "dayjs",
       ],
     },
   },
