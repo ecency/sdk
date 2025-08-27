@@ -13,4 +13,5 @@ export interface AccountProfile {
     account: string;
     weight: number;
   };
+  tokens?: { symbol: string; type: string; meta: Record<string, any> }[];
 }

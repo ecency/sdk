@@ -1,18 +1,16 @@
 import { CONFIG } from "@ecency/sdk";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { useHiveKeysQuery } from "@/modules/wallets/queries";
-import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
+import { EcencyTokenMetadata } from "@/modules/wallets/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface Payload {
-  currency: EcencyWalletCurrency;
+  currency: string;
   address: string;
 }
 
 export function useCreateAccountWithWallets(username: string) {
-  const { data } = useQuery<
-    Map<EcencyWalletCurrency, EcencyCreateWalletInformation>
-  >({
+  const { data } = useQuery<Map<EcencyWalletCurrency, EcencyTokenMetadata>>({
     queryKey: ["ecency-wallets", "wallets", username],
   });
   const { data: hiveKeys } = useHiveKeysQuery(username);

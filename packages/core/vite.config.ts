@@ -24,6 +24,7 @@ export default defineConfig({
         "react/jsx-runtime",
         "bip39",
         "hivesigner",
+        "remeda",
       ],
     },
   },

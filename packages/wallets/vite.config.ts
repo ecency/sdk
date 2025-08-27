@@ -35,6 +35,7 @@ export default defineConfig({
         "bip39",
         "hivesigner",
         "dayjs",
+        "remeda",
       ],
     },
   },

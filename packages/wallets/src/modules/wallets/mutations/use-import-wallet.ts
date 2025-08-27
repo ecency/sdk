@@ -1,6 +1,6 @@
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { getKeysFromSeed } from "@/modules/wallets/functions";
-import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
+import { EcencyTokenMetadata } from "@/modules/wallets/types";
 import { getWallet } from "@/modules/wallets/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EcencyWalletsPrivateApi } from "./private-api-namespace";
@@ -9,6 +9,11 @@ interface Payload {
   privateKeyOrSeed: string;
 }
 
+/**
+ * This mutation uses for importing an existing wallet, validation and saving logically in application
+ *
+ * Keep attention: this mutation doesn't save wallet to somewhere in a server
+ */
 export function useImportWallet(
   username: string,
   currency: EcencyWalletCurrency
@@ -68,17 +73,18 @@ export function useImportWallet(
       };
     },
     onSuccess: ({ privateKey, publicKey, address }) => {
-      queryClient.setQueryData<
-        Map<EcencyWalletCurrency, EcencyCreateWalletInformation>
-      >(["ecency-wallets", "wallets", username], (data) =>
-        new Map(data ? Array.from(data.entries()) : []).set(currency, {
-          privateKey,
-          publicKey,
-          address,
-          username,
-          currency,
-          custom: true,
-        })
+      queryClient.setQueryData<Map<EcencyWalletCurrency, EcencyTokenMetadata>>(
+        ["ecency-wallets", "wallets", username],
+        (data) =>
+          new Map(data ? Array.from(data.entries()) : []).set(currency, {
+            privateKey,
+            publicKey,
+            address,
+            username,
+            currency,
+            type: "CHAIN",
+            custom: true,
+          })
       );
     },
   });

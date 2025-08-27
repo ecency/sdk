@@ -1,9 +1,9 @@
-import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EcencyCreateWalletInformation } from "@/modules/wallets/types";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
-import { delay, getWallet } from "@/modules/wallets/utils";
 import { useSeedPhrase } from "@/modules/wallets/queries";
+import { EcencyTokenMetadata } from "@/modules/wallets/types";
+import { delay, getWallet } from "@/modules/wallets/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 const PATHS = {
   [EcencyWalletCurrency.BTC]: "m/44'/0'/0'/0/0", // Bitcoin (BIP44)
@@ -15,6 +15,11 @@ const PATHS = {
   [EcencyWalletCurrency.ATOM]: "m/44'/118'/0'/0/0", // Cosmos (BIP44)
 } as const;
 
+/**
+ * Uses for creating wallet logically in the application
+ *
+ * Keep attention: this mutation doesn't save wallet to somewhere in a server
+ */
 export function useWalletCreate(
   username: string,
   currency: EcencyWalletCurrency
@@ -44,13 +49,16 @@ export function useWalletCreate(
         publicKey: address.publicKey,
         username,
         currency,
-      } as EcencyCreateWalletInformation;
+      } as EcencyTokenMetadata;
     },
     onSuccess: (info) => {
-      queryClient.setQueryData<
-        Map<EcencyWalletCurrency, EcencyCreateWalletInformation>
-      >(["ecency-wallets", "wallets", info.username], (data) =>
-        new Map(data ? Array.from(data.entries()) : []).set(info.currency, info)
+      queryClient.setQueryData<Map<EcencyWalletCurrency, EcencyTokenMetadata>>(
+        ["ecency-wallets", "wallets", info.username],
+        (data) =>
+          new Map(data ? Array.from(data.entries()) : []).set(
+            info.currency as EcencyWalletCurrency,
+            info
+          )
       );
     },
   });

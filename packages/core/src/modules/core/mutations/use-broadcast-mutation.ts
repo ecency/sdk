@@ -1,16 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
-import {getAccessToken, getLoginType, getPostingKey} from "../storage";
+import { getAccessToken, getLoginType, getPostingKey } from "../storage";
 import { Operation, PrivateKey } from "@hiveio/dhive";
 import { CONFIG } from "@/modules/core/config";
 import hs from "hivesigner";
-import {Keychain} from "@/modules/keychain";
+import { Keychain } from "@/modules/keychain";
 
 export function useBroadcastMutation<T>(
   mutationKey: Parameters<typeof useMutation>[0]["mutationKey"] = [],
   username: string | undefined,
-  operations: (payload: T) => Operation[]
+  operations: (payload: T) => Operation[],
+  onSuccess: Parameters<
+    typeof useMutation<unknown, unknown, T>
+  >[0]["onSuccess"] = () => {}
 ) {
   return useMutation({
+    onSuccess,
     mutationKey: [...mutationKey, username],
     mutationFn: async (payload: T) => {
       if (!username) {
@@ -30,8 +34,12 @@ export function useBroadcastMutation<T>(
       }
 
       const loginType = getLoginType(username);
-      if (loginType && loginType == 'keychain') {
-        return Keychain.broadcast(username, operations(payload), "Posting").then((r: any) => r.result)
+      if (loginType && loginType == "keychain") {
+        return Keychain.broadcast(
+          username,
+          operations(payload),
+          "Posting"
+        ).then((r: any) => r.result);
       }
 
       // With hivesigner access token

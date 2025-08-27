@@ -3956,6 +3956,13 @@ regexp.prototype.flags@^1.5.1:
     gopd "^1.2.0"
     set-function-name "^2.0.2"
 
+remeda@^2.30.0:
+  version "2.30.0"
+  resolved "https://registry.yarnpkg.com/remeda/-/remeda-2.30.0.tgz#b4f10b24f32ed84ad9e5cc49ebb0a650f34da6e0"
+  integrity sha512-TcRpI1ecqnMer3jHhFtMerGvHFCDlCHljUp0/9A4HxHOh5bSY3kP1l8nQDFMnWYJKl3MSarDNY1tb0Bs/bCmvw==
+  dependencies:
+    type-fest "^4.41.0"
+
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
@@ -4519,6 +4526,11 @@ type-check@^0.4.0, type-check@~0.4.0:
   integrity sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==
   dependencies:
     prelude-ls "^1.2.1"
+
+type-fest@^4.41.0:
+  version "4.41.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.41.0.tgz#6ae1c8e5731273c2bf1f58ad39cbae2c91a46c58"
+  integrity sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==
 
 typeforce@1.18.0, typeforce@^1.11.5, typeforce@^1.18.0:
   version "1.18.0"

@@ -23,13 +23,11 @@ export function getAllTokensListQueryOptions(query: string) {
           EcencyWalletBasicTokens.Hive,
           EcencyWalletBasicTokens.HivePower,
           EcencyWalletBasicTokens.HiveDollar,
-          EcencyWalletBasicTokens.Spk,
-          "LARYNX",
-          "LP",
         ].filter((token) => token.toLowerCase().includes(query.toLowerCase())),
         external: Object.values(EcencyWalletCurrency).filter((token) =>
           token.toLowerCase().includes(query.toLowerCase())
         ),
+        spk: [EcencyWalletBasicTokens.Spk, "LARYNX", "LP"],
         layer2: metadataList,
       };
     },
