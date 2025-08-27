@@ -8,7 +8,7 @@ export function getPointsAssetTransactionsQueryOptions(
   type?: PointTransactionType
 ) {
   return queryOptions({
-    queryKey: ["assets", "points", "transactions", username],
+    queryKey: ["assets", "points", "transactions", username, type],
     queryFn: async () => {
       const response = await fetch(
         `${CONFIG.privateApiHost}/private-api/point-list`,
