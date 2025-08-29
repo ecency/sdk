@@ -4,3 +4,4 @@ export * from "./power-up";
 export * from "./delegate";
 export * from "./power-down";
 export * from "./withdraw-route";
+export * from "./claim-rewards";
