@@ -23,18 +23,41 @@ npm install @ecency/sdk
 1. Install `react @tanstack/react-query @hiveio/dhive`
 2. Use!
 
+## SDK
+
+`@ecency/sdk` bundles React Query helpers for the Hive blockchain:
+
+- Accounts, posts, operations, communities, games, analytics, and keychain modules
+- Query and mutation option builders
+- Customisable Hive RPC clients via the `CONFIG` object
+
+See [packages/core/README.md](packages/core/README.md) for detailed usage.
+
 ## Wallets
 
-This package built on top of [@hiveio/dhive](https://www.npmjs.com/package/@hiveio/dhive) and [okweb3](http://okx.github.io/) packages.
+This package is built on top of [@hiveio/dhive](https://www.npmjs.com/package/@hiveio/dhive) and [okweb3](http://okx.github.io/) packages.
 
 Main functionality is creating wallets based on seed phrase([BIP39](https://www.npmjs.com/package/bip39)) and generating addresses with keys on device. Seed phrases and private keys are never sent to any API, all operations happen locally.
 
-Supportings tokens: BTC, ETH, SOL, TRX, TON, ATOM, APT – theoretically all child tokens of these systems. Make forks for it.
+Supported tokens: BTC, ETH, SOL, TRX, TON, ATOM, APT – theoretically all child tokens of these systems. Make forks for it.
+Use `useGetExternalWalletBalanceQuery` to fetch balances for these chains.
+
+### Hive helpers
+
+`@ecency/wallets` also exposes helpers for interacting with the Hive blockchain:
+
+- `signDigest` – create a signature for an arbitrary digest
+- `signTx` – sign a transaction with an optional custom chain ID
+- `signTxAndBroadcast` – sign a transaction and immediately broadcast it
+- `encryptMemoWithKeys` / `decryptMemoWithKeys` – encrypt or decrypt memos with explicit keys
+- `encryptMemoWithAccounts` / `decryptMemoWithAccounts` – encrypt or decrypt memos by looking up account memo keys
+
+See [packages/wallets/README.md](packages/wallets/README.md) for usage examples.
 
 ## Roadmap
 
 - Add more Hive wallets operations
-- Allow to sign transactions with external wallets
-- Allow to import existing wallets by phrase or private keys
+- Allow signing transactions with external wallets
+- Allow importing existing wallets by phrase or private keys
 - Support of DASH
 - Support of DOGE
