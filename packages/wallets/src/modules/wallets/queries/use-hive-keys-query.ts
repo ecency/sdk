@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSeedPhrase } from "./use-seed-phrase";
-import { PrivateKey } from "@hiveio/dhive";
 import { EcencyHiveKeys } from "@/modules/wallets/types";
+import {
+  deriveHiveKeys,
+  deriveHiveMasterPasswordKeys,
+  detectHiveKeyDerivation,
+} from "@/modules/wallets/utils";
 
 export function useHiveKeysQuery(username: string) {
   const { data: seed } = useSeedPhrase(username);
@@ -14,21 +18,18 @@ export function useHiveKeysQuery(username: string) {
         throw new Error("[Ecency][Wallets] - no seed to create Hive account");
       }
 
-      const ownerKey = PrivateKey.fromLogin(username, seed, "owner");
-      const activeKey = PrivateKey.fromLogin(username, seed, "active");
-      const postingKey = PrivateKey.fromLogin(username, seed, "posting");
-      const memoKey = PrivateKey.fromLogin(username, seed, "memo");
+      const method = await detectHiveKeyDerivation(username, seed).catch(
+        () => "bip44"
+      );
+
+      const keys =
+        method === "master-password"
+          ? deriveHiveMasterPasswordKeys(username, seed)
+          : deriveHiveKeys(seed);
 
       return {
         username,
-        owner: ownerKey.toString(),
-        active: activeKey.toString(),
-        posting: postingKey.toString(),
-        memo: memoKey.toString(),
-        ownerPubkey: ownerKey.createPublic().toString(),
-        activePubkey: activeKey.createPublic().toString(),
-        postingPubkey: postingKey.createPublic().toString(),
-        memoPubkey: memoKey.createPublic().toString(),
+        ...keys,
       } as EcencyHiveKeys;
     },
   });
