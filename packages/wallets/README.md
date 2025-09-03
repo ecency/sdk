@@ -8,6 +8,8 @@ Utilities for managing Hive blockchain wallets and external cryptocurrency walle
 - `signDigest` – create a signature for an arbitrary digest
 - `signTx` – sign a transaction with an optional custom chain ID
 - `signTxAndBroadcast` – sign a transaction and immediately broadcast it
+- `signExternalTx` – sign transactions for external chains like BTC or ETH
+- `signExternalTxAndBroadcast` – sign and broadcast transactions on external networks
 - `encryptMemoWithKeys` / `decryptMemoWithKeys` – encrypt or decrypt memos using explicit keys
 - `encryptMemoWithAccounts` / `decryptMemoWithAccounts` – encrypt or decrypt memos by looking up account memo keys
 - `useGetExternalWalletBalanceQuery` – retrieve balances for external wallets such as BTC, ETH, SOL, TRX, TON, ATOM, or APT
@@ -27,6 +29,8 @@ import {
   signDigest,
   signTx,
   signTxAndBroadcast,
+  signExternalTx,
+  signExternalTxAndBroadcast,
   encryptMemoWithKeys,
   encryptMemoWithAccounts,
   decryptMemoWithKeys,
@@ -41,6 +45,8 @@ const client = new Client('https://api.hive.blog');
 const signature = signDigest('deadbeef', privateWif);
 const signedTx = signTx(tx, privateWif, customChainId);
 await signTxAndBroadcast(client, tx, privateWif);
+await signExternalTx(EcencyWalletCurrency.ETH, ethSignParams);
+await signExternalTxAndBroadcast(EcencyWalletCurrency.BTC, btcSignParams);
 
 const encrypted = await encryptMemoWithAccounts(client, privateWif, 'alice', '#hello');
 const memo = decryptMemoWithKeys(privateWif, encrypted);

@@ -8,3 +8,4 @@ export * from "./sign-digest";
 export * from "./sign-transaction";
 export * from "./encrypt-memo";
 export * from "./decrypt-memo";
+export * from "./sign-external-transaction";
