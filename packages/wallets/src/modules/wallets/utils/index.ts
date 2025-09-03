@@ -4,3 +4,7 @@ export * from "./mnemonic-to-seed-bip-39";
 export * from "./derive-hive-bip44-keys";
 export * from "./derive-hive-master-password-keys";
 export * from "./detect-hive-key-derivation";
+export * from "./sign-digest";
+export * from "./sign-transaction";
+export * from "./encrypt-memo";
+export * from "./decrypt-memo";
