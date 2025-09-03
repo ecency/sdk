@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSeedPhrase } from "./use-seed-phrase";
 import { EcencyHiveKeys } from "@/modules/wallets/types";
-import { deriveHiveKeys } from "@/modules/wallets/utils";
+import {
+  deriveHiveKeys,
+  deriveHiveMasterPasswordKeys,
+  detectHiveKeyDerivation,
+} from "@/modules/wallets/utils";
 
 export function useHiveKeysQuery(username: string) {
   const { data: seed } = useSeedPhrase(username);
@@ -14,7 +18,14 @@ export function useHiveKeysQuery(username: string) {
         throw new Error("[Ecency][Wallets] - no seed to create Hive account");
       }
 
-      const keys = deriveHiveKeys(seed);
+      const method = await detectHiveKeyDerivation(username, seed).catch(
+        () => "bip44"
+      );
+
+      const keys =
+        method === "master-password"
+          ? deriveHiveMasterPasswordKeys(username, seed)
+          : deriveHiveKeys(seed);
 
       return {
         username,
