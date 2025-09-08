@@ -80,7 +80,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case "signExternalTx": {
       if (!state.mnemonic) throw new Error("locked");
       const { currency, params } = request.params ?? {};
-      return signExternalTx(currency, params);
+      const wallet = getWallet(currency as any);
+      if (!wallet) throw new Error("Unsupported chain");
+      const [privateKey] = await getKeysFromSeed(
+        state.mnemonic,
+        wallet,
+        currency as any
+      );
+      return signExternalTx(currency, { ...params, privateKey });
     }
     case "getBalance": {
       // Placeholder implementation. In a full snap environment the

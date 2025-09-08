@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { onRpcRequest } from '../dist/ecency-snap.es.js';
+import { getLastSignExternalTxParams } from './mock-wallets.js';
 
 const state = {};
 
@@ -38,6 +39,16 @@ test('sign hive tx', async () => {
   const tx = { ref_block_num: 0, ref_block_prefix: 0, expiration: '2020-01-01T00:00:00', operations: [], extensions: [] };
   const signed = await onRpcRequest({ origin: 'test', request: { method: 'signHiveTx', params: { tx } } });
   assert.ok(Array.isArray(signed.signatures));
+});
+
+test('sign external tx', async () => {
+  await onRpcRequest({ origin: 'test', request: { method: 'initialize', params: { mnemonic } } });
+  const res = await onRpcRequest({
+    origin: 'test',
+    request: { method: 'signExternalTx', params: { currency: 'BTC', params: { foo: 'bar' } } },
+  });
+  assert.equal(res, 'signed');
+  assert.equal(getLastSignExternalTxParams().privateKey, 'priv');
 });
 
 test('balance query placeholder', async () => {
