@@ -1,0 +1,28 @@
+{
+  "name": "@ecency/snap",
+  "private": false,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "NODE_OPTIONS=--import=./test/mock-wallets.js node --test"
+  },
+  "dependencies": {
+    "@ecency/wallets": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.8",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0",
+    "vite-plugin-dts": "4.5.3",
+    "vite-plugin-node-polyfills": "^0.23.0"
+  }
+}

@@ -1,0 +1,94 @@
+import {
+  mnemonicToSeedBip39,
+  deriveHiveKeys,
+  signTx,
+  signExternalTx,
+  getWallet,
+  getKeysFromSeed,
+} from "@ecency/wallets";
+
+export type RpcRequest = { method: string; params?: any };
+export interface RpcArgs { origin: string; request: RpcRequest }
+export type OnRpcRequestHandler = (args: RpcArgs) => Promise<any>;
+
+interface SnapState { mnemonic?: string }
+
+async function getState(): Promise<SnapState> {
+  return (
+    ((await (globalThis as any).snap.request({
+      method: "snap_manageState",
+      params: { operation: "get" },
+    })) as SnapState) || {}
+  );
+}
+
+async function updateState(state: SnapState): Promise<void> {
+  await (globalThis as any).snap.request({
+    method: "snap_manageState",
+    params: { operation: "update", newState: state },
+  });
+}
+
+async function getAddressFromMnemonic(mnemonic: string, chain: string) {
+  if (chain === "HIVE") {
+    const keys = deriveHiveKeys(mnemonic);
+    return keys.activePubkey;
+  }
+  const wallet = getWallet(chain as any);
+  if (!wallet) throw new Error("Unsupported chain");
+  const [, address] = await getKeysFromSeed(mnemonic, wallet, chain as any);
+  return address;
+}
+
+async function signHiveTransaction(mnemonic: string, tx: any) {
+  const keys = deriveHiveKeys(mnemonic);
+  return signTx(tx, keys.active);
+}
+
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
+  const state = await getState();
+
+  switch (request.method) {
+    case "initialize": {
+      const mnemonic = request.params?.mnemonic;
+      if (typeof mnemonic !== "string") throw new Error("mnemonic required");
+      mnemonicToSeedBip39(mnemonic); // validate
+      await updateState({ mnemonic });
+      return true;
+    }
+    case "unlock": {
+      const mnemonic = request.params?.mnemonic;
+      if (typeof mnemonic !== "string") throw new Error("mnemonic required");
+      mnemonicToSeedBip39(mnemonic); // validate
+      if (state.mnemonic && mnemonic !== state.mnemonic) {
+        throw new Error("invalid mnemonic");
+      }
+      await updateState({ mnemonic });
+      return true;
+    }
+    case "getAddress": {
+      if (!state.mnemonic) throw new Error("locked");
+      const chain = request.params?.chain;
+      const address = await getAddressFromMnemonic(state.mnemonic, chain);
+      return { address };
+    }
+    case "signHiveTx": {
+      if (!state.mnemonic) throw new Error("locked");
+      const tx = request.params?.tx;
+      return signHiveTransaction(state.mnemonic, tx);
+    }
+    case "signExternalTx": {
+      if (!state.mnemonic) throw new Error("locked");
+      const { currency, params } = request.params ?? {};
+      return signExternalTx(currency, params);
+    }
+    case "getBalance": {
+      // Placeholder implementation. In a full snap environment the
+      // useGetExternalWalletBalanceQuery hook from @ecency/wallets
+      // should be used via a QueryClient.
+      return 0;
+    }
+    default:
+      throw new Error("Method not found.");
+  }
+};
