@@ -56,11 +56,16 @@ export function useSaveWalletInformationToMetadata(username: string) {
         accountData.profile?.tokens
       );
       const payloadTokens =
-        (tokens.map(({ currency, type, privateKey, ...meta }) => ({
-          symbol: currency!,
-          type,
-          meta,
-        })) as AccountProfile["tokens"]) ?? [];
+        (tokens.map(
+          ({ currency, type, privateKey, username, meta = {}, ...rest }) => ({
+            symbol: currency!,
+            type,
+            meta: {
+              ...R.omit(meta, ["privateKey", "username"]),
+              ...rest,
+            },
+          })
+        ) as AccountProfile["tokens"]) ?? [];
 
       const payloadChainTokens = getGroupedChainTokens(payloadTokens, true);
       const payloadNonChainTokens = payloadTokens.filter(
