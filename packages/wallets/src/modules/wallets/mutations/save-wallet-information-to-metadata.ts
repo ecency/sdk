@@ -23,7 +23,11 @@ function getGroupedChainTokens(
       item.meta.show = show;
       return item;
     }),
-    R.groupByProp("symbol")
+    // Chain tokens are unique by symbol, so indexing by symbol
+    // gives a direct lookup map instead of an array-based grouping.
+    R.indexBy(
+      (item: NonNullable<AccountProfile["tokens"]>[number]) => item.symbol
+    )
   );
 }
 
