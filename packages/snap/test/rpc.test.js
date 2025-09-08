@@ -1,6 +1,7 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { onRpcRequest } from '../dist/ecency-snap.es.js';
+import test from "node:test";
+import assert from "node:assert/strict";
+import { onRpcRequest } from "../dist/bundle.js";
+import { getLastSignExternalTxParams } from "./mock-wallets.js";
 import { getLastSignExternalTxParams } from './mock-wallets.js';
 
 const state = {};
@@ -8,36 +9,60 @@ const state = {};
 // simple snap state stub
 globalThis.snap = {
   request: async ({ method, params }) => {
-    if (method !== 'snap_manageState') throw new Error('unsupported');
-    if (params.operation === 'get') return state;
-    if (params.operation === 'update') {
+    if (method !== "snap_manageState") throw new Error("unsupported");
+    if (params.operation === "get") return state;
+    if (params.operation === "update") {
       Object.assign(state, params.newState);
       return null;
     }
-    throw new Error('bad operation');
+    throw new Error("bad operation");
   },
 };
 
-const mnemonic = 'test test test test test test test test test test test junk';
+const mnemonic = "test test test test test test test test test test test junk";
 
-test('initialize and unlock', async () => {
-  const init = await onRpcRequest({ origin: 'test', request: { method: 'initialize', params: { mnemonic } } });
+test("initialize and unlock", async () => {
+  const init = await onRpcRequest({
+    origin: "test",
+    request: { method: "initialize", params: { mnemonic } },
+  });
   assert.equal(init, true);
 
-  const unlock = await onRpcRequest({ origin: 'test', request: { method: 'unlock', params: { mnemonic } } });
+  const unlock = await onRpcRequest({
+    origin: "test",
+    request: { method: "unlock", params: { mnemonic } },
+  });
   assert.equal(unlock, true);
 });
 
-test('get hive address', async () => {
-  await onRpcRequest({ origin: 'test', request: { method: 'initialize', params: { mnemonic } } });
-  const res = await onRpcRequest({ origin: 'test', request: { method: 'getAddress', params: { chain: 'HIVE' } } });
+test("get hive address", async () => {
+  await onRpcRequest({
+    origin: "test",
+    request: { method: "initialize", params: { mnemonic } },
+  });
+  const res = await onRpcRequest({
+    origin: "test",
+    request: { method: "getAddress", params: { chain: "HIVE" } },
+  });
   assert.ok(res.address);
 });
 
-test('sign hive tx', async () => {
-  await onRpcRequest({ origin: 'test', request: { method: 'initialize', params: { mnemonic } } });
-  const tx = { ref_block_num: 0, ref_block_prefix: 0, expiration: '2020-01-01T00:00:00', operations: [], extensions: [] };
-  const signed = await onRpcRequest({ origin: 'test', request: { method: 'signHiveTx', params: { tx } } });
+test("sign hive tx", async () => {
+  await onRpcRequest({
+    origin: "test",
+    request: { method: "initialize", params: { mnemonic } },
+  });
+  const tx = {
+    ref_block_num: 0,
+    ref_block_prefix: 0,
+    expiration: "2020-01-01T00:00:00",
+    operations: [],
+    extensions: [],
+  };
+  const signed = await onRpcRequest({
+    origin: "test",
+    request: { method: "signHiveTx", params: { tx } },
+  });
   assert.ok(Array.isArray(signed.signatures));
 });
 
@@ -51,9 +76,33 @@ test('sign external tx', async () => {
   assert.equal(getLastSignExternalTxParams().privateKey, 'priv');
 });
 
-test('balance query placeholder', async () => {
-  await onRpcRequest({ origin: 'test', request: { method: 'initialize', params: { mnemonic } } });
-  const bal = await onRpcRequest({ origin: 'test', request: { method: 'getBalance', params: { currency: 'BTC', address: 'xyz' } } });
+test("balance query placeholder", async () => {
+  await onRpcRequest({
+    origin: "test",
+    request: { method: "initialize", params: { mnemonic } },
+  });
+  const bal = await onRpcRequest({
+    origin: "test",
+    request: {
+      method: "getBalance",
+      params: { currency: "BTC", address: "xyz" },
+    },
+  });
   assert.equal(bal, 0);
+});
+test("sign external tx", async () => {
+  await onRpcRequest({
+    origin: "test",
+    request: { method: "initialize", params: { mnemonic } },
+  });
+  const res = await onRpcRequest({
+    origin: "test",
+    request: {
+      method: "signExternalTx",
+      params: { currency: "BTC", params: { foo: "bar" } },
+    },
+  });
+  assert.equal(res, "signed");
+  assert.equal(getLastSignExternalTxParams().privateKey, "priv");
 });
 

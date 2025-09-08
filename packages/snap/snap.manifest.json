@@ -1,0 +1,24 @@
+{
+  "version": "0.1.0",
+  "proposedName": "Ecency Snap",
+  "description": "MetaMask Snap providing multi-chain wallet capabilities.",
+  "source": {
+    "shasum": "7a7e92d25e072e85429c7288e9292058191192cac551341ae3fab60579154618",
+    "location": {
+      "local": "dist/bundle.js"
+    }
+  },
+  "initialPermissions": {
+    "snap_getBip44Entropy": [
+      {
+        "coinType": 756
+      }
+    ],
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {},
+    "endowment:webassembly": {}
+  },
+  "manifestVersion": "0.1"
+}

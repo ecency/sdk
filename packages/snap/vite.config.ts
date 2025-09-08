@@ -9,7 +9,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "Ecency Snap",
       formats: ["es"],
-      fileName: (format) => `ecency-snap.${format}.js`,
+      fileName: () => "bundle.js",
     },
     rollupOptions: {
       external: [
@@ -24,7 +24,7 @@ export default defineConfig({
         "@okxweb3/coin-ton",
         "@okxweb3/coin-tron",
         "@okxweb3/crypto-lib",
-        "bip39"
+        "bip39",
       ],
     },
   },

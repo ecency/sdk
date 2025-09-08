@@ -12,6 +12,31 @@ yarn add @ecency/snap
 Add the snap to MetaMask using a local manifest or bundle produced by
 `yarn workspace @ecency/snap build`.
 
+## Development
+
+From the repository root you can build and test the snap:
+
+```bash
+# compile TypeScript and generate the snap bundle/manifest
+yarn workspace @ecency/snap build
+
+# run unit tests
+yarn workspace @ecency/snap test
+```
+
+The build outputs `snap.manifest.json` alongside `dist/bundle.js`.
+
+### Loading in MetaMask Flask
+
+1. Install the [MetaMask Flask](https://metamask.io/flask/) extension.
+2. Run `yarn workspace @ecency/snap build` to generate the manifest and bundle.
+3. In MetaMask, open **Settings → Snaps** and choose **Add Snap**.
+4. Select `packages/snap/snap.manifest.json` from this repository.
+5. Approve the installation prompts.
+
+The snap now appears in the MetaMask Snaps list and can be invoked by dApps
+using `local:@ecency/snap`.
+
 ## Usage
 
 The snap exposes several RPC methods:
@@ -28,20 +53,39 @@ Example from a dApp:
 
 ```ts
 const result = await window.ethereum.request({
-  method: 'wallet_invokeSnap',
+  method: "wallet_invokeSnap",
   params: {
-    snapId: 'local:@ecency/snap',
+    snapId: "local:@ecency/snap",
     request: {
-      method: 'getAddress',
-      params: { chain: 'HIVE' }
-    }
-  }
+      method: "getAddress",
+      params: { chain: "HIVE" },
+    },
+  },
 });
 ```
 
-## Security considerations
+## Required Permissions
 
-The mnemonic phrase is stored inside the snap's managed state. Snaps run in an
-isolated environment, but any state stored by the snap is persisted on the
-user's machine. Avoid exposing the mnemonic and consider encrypting state in
-production deployments.
+This snap declares the following permissions:
+
+- `snap_getBip44Entropy` – derive Hive keys from the MetaMask seed phrase.
+- `endowment:rpc` – communicate with dApps via the snap RPC interface.
+- `snap_dialog` – prompt the user when signing transactions or encrypting and
+  decrypting data.
+- `endowment:webassembly` – enable WebAssembly support for cryptographic
+  libraries used by the snap.
+
+All permissions follow the principle of least privilege. No private keys are
+stored in memory or exposed to the client.
+
+## Security Notes
+
+- Keys are derived only when required and cleared from memory immediately after
+  use.
+- No network requests are made.
+- All transaction data is validated before processing.
+- No sensitive data is stored in browser storage.
+- The mnemonic phrase resides in the snap's managed state. Although snaps run in
+  an isolated environment, that state persists on the user's machine. Avoid
+  exposing the mnemonic and consider encrypting state for production
+  deployments.
