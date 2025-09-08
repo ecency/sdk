@@ -56,7 +56,7 @@ export function useSaveWalletInformationToMetadata(username: string) {
         accountData.profile?.tokens
       );
       const payloadTokens =
-        (tokens.map(({ currency, type, ...meta }) => ({
+        (tokens.map(({ currency, type, privateKey, ...meta }) => ({
           symbol: currency!,
           type,
           meta,

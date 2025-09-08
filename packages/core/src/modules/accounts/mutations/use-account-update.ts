@@ -9,6 +9,15 @@ interface Payload {
   tokens: AccountProfile["tokens"];
 }
 
+function sanitizeTokens(
+  tokens?: AccountProfile["tokens"]
+): AccountProfile["tokens"] | undefined {
+  return tokens?.map(({ meta, ...rest }) => ({
+    ...rest,
+    meta: R.omit(meta, ["privateKey"]),
+  }));
+}
+
 function getBuiltProfile({
   profile,
   tokens,
@@ -22,6 +31,8 @@ function getBuiltProfile({
   if (tokens && tokens.length > 0) {
     metadata.tokens = tokens;
   }
+
+  metadata.tokens = sanitizeTokens(metadata.tokens);
 
   return metadata;
 }
