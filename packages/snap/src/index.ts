@@ -29,15 +29,30 @@ async function updateState(state: SnapState): Promise<void> {
   });
 }
 
-async function getAddressFromMnemonic(mnemonic: string, chain: string) {
-  if (chain === "HIVE") {
-    const keys = deriveHiveKeys(mnemonic);
-    return keys.activePubkey;
-  }
-  const wallet = getWallet(chain as any);
-  if (!wallet) throw new Error("Unsupported chain");
-  const [, address] = await getKeysFromSeed(mnemonic, wallet, chain as any);
-  return address;
+async function getAddressesFromMnemonic(mnemonic: string) {
+  const hive = deriveHiveKeys(mnemonic);
+  const chains = ["BTC", "ETH", "APT", "TRX", "ATOM", "SOL"] as const;
+  const entries = await Promise.all(
+    chains.map(async (chain) => {
+      const wallet = getWallet(chain as any);
+      if (!wallet) return [chain.toLowerCase(), null];
+      const [, address] = await getKeysFromSeed(
+        mnemonic,
+        wallet,
+        chain as any,
+      );
+      return [chain.toLowerCase(), address];
+    }),
+  );
+  return {
+    hive: {
+      owner: hive.ownerPubkey,
+      active: hive.activePubkey,
+      posting: hive.postingPubkey,
+      memo: hive.memoPubkey,
+    },
+    ...Object.fromEntries(entries),
+  } as any;
 }
 
 async function signHiveTransaction(mnemonic: string, tx: any) {
@@ -66,11 +81,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       await updateState({ mnemonic });
       return true;
     }
-    case "getAddress": {
+    case "getAddresses": {
       if (!state.mnemonic) throw new Error("locked");
-      const chain = request.params?.chain;
-      const address = await getAddressFromMnemonic(state.mnemonic, chain);
-      return { address };
+      return getAddressesFromMnemonic(state.mnemonic);
     }
     case "signHiveTx": {
       if (!state.mnemonic) throw new Error("locked");

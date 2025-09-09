@@ -25,9 +25,9 @@ test("dapp flow", async () => {
   });
   const addr = await onRpcRequest({
     origin: "dapp",
-    request: { method: "getAddress", params: { chain: "HIVE" } },
+    request: { method: "getAddresses" },
   });
-  assert.ok(addr.address);
+  assert.ok(addr.hive.active);
 
   const tx = {
     ref_block_num: 0,

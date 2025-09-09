@@ -6,8 +6,10 @@ const pkg = JSON.parse(
   fs.readFileSync(path.join(__dirname, "package.json"), "utf8"),
 );
 const bundlePath = path.join(__dirname, "dist", "bundle.js");
+// Compute the digest from the exact bundle bytes so the manifest always
+// matches what MetaMask downloads over HTTP.
 const source = fs.readFileSync(bundlePath);
-const shasum = crypto.createHash("sha256").update(source).digest("hex");
+const shasum = crypto.createHash("sha256").update(source).digest("base64");
 
 const manifest = {
   version: pkg.version,
@@ -17,7 +19,11 @@ const manifest = {
   source: {
     shasum,
     location: {
-      local: "dist/bundle.js",
+      npm: {
+        filePath: "dist/bundle.js",
+        packageName: pkg.name,
+        registry: "https://registry.npmjs.org",
+      },
     },
   },
   initialPermissions: {

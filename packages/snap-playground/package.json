@@ -1,0 +1,14 @@
+{
+  "name": "@ecency/snap-playground",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "yarn workspace @ecency/snap build && vite",
+    "build": "yarn workspace @ecency/snap build && vite build"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
+  }
+}
