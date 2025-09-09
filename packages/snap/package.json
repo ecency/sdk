@@ -4,15 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
+  "main": "dist/bundle.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "snap.manifest.json", "README.md"],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build && node build-manifest.cjs",
+    "dev": "vite build --watch",
+    "build": "vite build",
     "test": "NODE_OPTIONS=--import=./test/mock-wallets.js node --test"
   },
   "dependencies": {

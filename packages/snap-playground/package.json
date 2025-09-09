@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "start": "yarn workspace @ecency/snap build && vite",
+    "dev": "yarn workspace @ecency/snap dev & vite --port 5173 --strictPort",
+    "start": "yarn workspace @ecency/snap build && vite preview --port 5173 --strictPort",
     "build": "yarn workspace @ecency/snap build && vite build"
   },
   "devDependencies": {
