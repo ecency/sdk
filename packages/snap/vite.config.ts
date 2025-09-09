@@ -6,10 +6,14 @@ import type { Plugin } from "vite";
 import dtsPlugin from "vite-plugin-dts";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
+const pkg = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "package.json"), "utf8"),
+);
+
 function updateManifestShasum(): Plugin {
   return {
     name: "update-manifest-shasum",
-    closeBundle() {
+    writeBundle() {
       const bundlePath = path.resolve(__dirname, "dist", "bundle.js");
       if (!fs.existsSync(bundlePath)) return;
 
@@ -19,16 +23,21 @@ function updateManifestShasum(): Plugin {
       const manifestPath = path.resolve(__dirname, "snap.manifest.json");
       const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
-      // IMPORTANT: this URL must match how the file will be fetched by MetaMask
-      // Your playground serves ../snap at http://localhost:5173/
       manifest.source = manifest.source ?? {};
       manifest.source.location = manifest.source.location ?? {};
-      manifest.source.location.http = {
-        url: "http://localhost:5173/dist/bundle.js",
-      };
+      manifest.source.location.npm =
+        manifest.source.location.npm ?? {
+          filePath: "dist/bundle.js",
+          packageName: pkg.name,
+          registry: "https://registry.npmjs.org",
+        };
+      delete manifest.source.location.http;
       manifest.source.shasum = shasum;
 
-      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+      fs.writeFileSync(
+        manifestPath,
+        JSON.stringify(manifest, null, 2) + "\n",
+      );
       console.log("[snap] Updated manifest shasum");
     },
   };

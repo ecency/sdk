@@ -5,8 +5,10 @@
   "source": {
     "shasum": "58XiWnnFCtB/Z/YvJSOWhAX4gosA0W9biSBrSUGxZMk=",
     "location": {
-      "http": {
-        "url": "http://localhost:5173/dist/bundle.js"
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@ecency/snap",
+        "registry": "https://registry.npmjs.org"
       }
     }
   },
