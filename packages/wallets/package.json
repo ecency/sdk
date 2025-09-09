@@ -4,7 +4,7 @@
   "version": "1.3.11",
   "type": "module",
   "license": "MIT",
-  "main": "./dist/ecency-sdk.umd.js",
+  "main": "./dist/ecency-sdk.es.js",
   "module": "./dist/ecency-sdk.es.js",
   "typings": "./dist/index.d.ts",
   "files": [

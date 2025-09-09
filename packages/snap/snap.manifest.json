@@ -3,7 +3,7 @@
   "proposedName": "Ecency Snap",
   "description": "MetaMask Snap providing multi-chain wallet capabilities.",
   "source": {
-    "shasum": "+gn3cFrS+R+J+5IBVFADiePNDRkejucH5jyiRiIEnf4=",
+    "shasum": "58XiWnnFCtB/Z/YvJSOWhAX4gosA0W9biSBrSUGxZMk=",
     "location": {
       "http": {
         "url": "http://localhost:5173/dist/bundle.js"

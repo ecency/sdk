@@ -15,7 +15,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        "crypto",
         "react",
         "@hiveio/dhive",
         "@tanstack/react-query",

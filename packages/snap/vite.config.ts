@@ -4,8 +4,7 @@ import { createHash } from "crypto";
 import { defineConfig } from "vite";
 import type { Plugin } from "vite";
 import dtsPlugin from "vite-plugin-dts";
-// Polyfills are usually not needed in the snap runtime. Keep it only if you know you need specific shims.
-// import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 function updateManifestShasum(): Plugin {
   return {
@@ -61,7 +60,7 @@ export default defineConfig({
   },
   plugins: [
     dtsPlugin({ insertTypesEntry: false }),
-    // nodePolyfills(),
+    nodePolyfills(),
     updateManifestShasum(),
   ],
 });
