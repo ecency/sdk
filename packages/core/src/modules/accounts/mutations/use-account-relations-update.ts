@@ -12,7 +12,7 @@ export function useAccountRelationsUpdate(
   onError: (e: Error) => void
 ) {
   return useMutation({
-    mutationKey: [],
+    mutationKey: ["accounts", "relation", "update", reference, target],
     mutationFn: async (kind: Kind) => {
       const relationsQuery = getRelationshipBetweenAccountsQueryOptions(
         reference,

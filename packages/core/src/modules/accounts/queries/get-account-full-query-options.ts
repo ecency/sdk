@@ -7,7 +7,7 @@ import {
 } from "../types";
 import { queryOptions } from "@tanstack/react-query";
 
-export function getAccountFullQueryOptions(username: string) {
+export function getAccountFullQueryOptions(username: string | undefined) {
   return queryOptions({
     queryKey: ["get-account-full", username],
     queryFn: async () => {

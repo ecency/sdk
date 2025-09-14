@@ -5,3 +5,4 @@ export * from "./get-relationship-between-accounts-query-options";
 export * from "./get-account-subscriptions-query-options";
 export * from "./get-active-account-bookmarks-query-options";
 export * from "./get-active-account-favourites-query-options";
+export * from "./get-account-recoveries-query-options";
