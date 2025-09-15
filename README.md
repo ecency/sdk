@@ -51,6 +51,7 @@ Use `useGetExternalWalletBalanceQuery` to fetch balances for these chains.
 - `signTxAndBroadcast` – sign a transaction and immediately broadcast it
 - `signExternalTx` – sign transactions for external chains like BTC or ETH
 - `signExternalTxAndBroadcast` – sign and broadcast transactions on external networks
+- `buildExternalTx` – construct transactions or PSBTs for external chains
 - `encryptMemoWithKeys` / `decryptMemoWithKeys` – encrypt or decrypt memos with explicit keys
 - `encryptMemoWithAccounts` / `decryptMemoWithAccounts` – encrypt or decrypt memos by looking up account memo keys
 
