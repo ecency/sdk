@@ -10,7 +10,7 @@ import { getAccountWalletListQueryOptions } from "../queries";
 
 function getGroupedChainTokens(
   tokens?: AccountProfile["tokens"],
-  show = false
+  show = false,
 ) {
   if (!tokens) {
     return {};
@@ -26,14 +26,14 @@ function getGroupedChainTokens(
     // Chain tokens are unique by symbol, so indexing by symbol
     // gives a direct lookup map instead of an array-based grouping.
     R.indexBy(
-      (item: NonNullable<AccountProfile["tokens"]>[number]) => item.symbol
-    )
+      (item: NonNullable<AccountProfile["tokens"]>[number]) => item.symbol,
+    ),
   );
 }
 
 /**
  * Saving of token(s) metadata to Hive profile
- * It may contains: external wallets(see EcencyWalletCurrency), Hive tokens arrangement
+ * It may contain: external wallets(see EcencyWalletCurrency), Hive tokens arrangement
  *
  * Basically, this mutation is a convenient wrapper for update profile operation
  */
@@ -53,13 +53,13 @@ export function useSaveWalletInformationToMetadata(
         throw new Error("[SDK][Wallets] – no account data to save wallets");
       }
 
-      // Chain type tokens couldn't be deleted entierly from the profile list
+      // Chain type tokens couldn't be deleted entirely from the profile list,
       //       then visibility should be controlling using meta.show field
       const profileChainTokens = getGroupedChainTokens(
-        accountData.profile?.tokens
+        accountData.profile?.tokens,
       );
       const payloadTokens =
-        (tokens.map(({ currency, type, privateKey, ...meta }) => ({
+        (tokens.map(({ currency, type, privateKey, username, ...meta }) => ({
           symbol: currency!,
           type,
           meta,
@@ -67,13 +67,13 @@ export function useSaveWalletInformationToMetadata(
 
       const payloadChainTokens = getGroupedChainTokens(payloadTokens, true);
       const payloadNonChainTokens = payloadTokens.filter(
-        ({ type }) => type !== "CHAIN"
+        ({ type }) => type !== "CHAIN",
       );
 
       const mergedChainTokens = R.pipe(
         profileChainTokens,
         R.mergeDeep(payloadChainTokens),
-        R.values()
+        R.values(),
       );
 
       return updateProfile({

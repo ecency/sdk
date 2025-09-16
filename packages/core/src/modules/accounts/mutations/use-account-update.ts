@@ -12,10 +12,14 @@ interface Payload {
 function sanitizeTokens(
   tokens?: AccountProfile["tokens"]
 ): AccountProfile["tokens"] | undefined {
-  return tokens?.map(({ meta, ...rest }) => ({
-    ...rest,
-    meta: R.omit(meta, ["privateKey"]),
-  }));
+  return tokens?.map(({ meta, ...rest }) => {
+    if (!meta || typeof meta !== "object") {
+      return { ...rest, meta };
+    }
+
+    const { privateKey, username, ...safeMeta } = meta;
+    return { ...rest, meta: safeMeta };
+  });
 }
 
 function getBuiltProfile({

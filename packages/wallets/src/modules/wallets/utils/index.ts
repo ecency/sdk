@@ -9,3 +9,4 @@ export * from "./sign-transaction";
 export * from "./encrypt-memo";
 export * from "./decrypt-memo";
 export * from "./sign-external-transaction";
+export * from "./build-external-transaction";
