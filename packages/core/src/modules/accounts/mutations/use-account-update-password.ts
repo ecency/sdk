@@ -15,7 +15,7 @@ interface Payload {
  */
 export function useAccountUpdatePassword(
   username: string,
-  options: Pick<Parameters<typeof useMutation>[0], "onSuccess" | "onError">
+  options?: Pick<Parameters<typeof useMutation>[0], "onSuccess" | "onError">
 ) {
   const { data: accountData } = useQuery(getAccountFullQueryOptions(username));
 
@@ -23,21 +23,33 @@ export function useAccountUpdatePassword(
 
   return useMutation({
     mutationKey: ["accounts", "password-update", username],
-    mutationFn: async ({ newPassword, currentPassword }: Payload) => {
+    mutationFn: async ({
+      newPassword,
+      currentPassword,
+      keepCurrent,
+    }: Payload) => {
       if (!accountData) {
         throw new Error(
           "[SDK][Update password] – cannot update password for anon user"
         );
       }
+      const currentKey = PrivateKey.fromLogin(
+        username,
+        currentPassword,
+        "owner"
+      );
 
       return updateKeys({
-        currentPassword,
-        keys: {
-          owner: PrivateKey.fromLogin(username, newPassword, "owner"),
-          active: PrivateKey.fromLogin(username, newPassword, "active"),
-          posting: PrivateKey.fromLogin(username, newPassword, "posting"),
-          memo: PrivateKey.fromLogin(username, newPassword, "memo"),
-        },
+        currentKey,
+        keepCurrent,
+        keys: [
+          {
+            owner: PrivateKey.fromLogin(username, newPassword, "owner"),
+            active: PrivateKey.fromLogin(username, newPassword, "active"),
+            posting: PrivateKey.fromLogin(username, newPassword, "posting"),
+            memo_key: PrivateKey.fromLogin(username, newPassword, "memo"),
+          },
+        ],
       });
     },
     ...options,

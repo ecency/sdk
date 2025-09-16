@@ -37,7 +37,10 @@ function getGroupedChainTokens(
  *
  * Basically, this mutation is a convenient wrapper for update profile operation
  */
-export function useSaveWalletInformationToMetadata(username: string) {
+export function useSaveWalletInformationToMetadata(
+  username: string,
+  options?: Pick<Parameters<typeof useMutation>[0], "onSuccess" | "onError">
+) {
   const queryClient = useQueryClient();
 
   const { data: accountData } = useQuery(getAccountFullQueryOptions(username));
@@ -80,9 +83,12 @@ export function useSaveWalletInformationToMetadata(username: string) {
         ] as AccountProfile["tokens"],
       });
     },
-    onSuccess: () =>
+    onError: options?.onError,
+    onSuccess: (response, vars, context) => {
+      options?.onSuccess?.(response, vars, context);
       queryClient.invalidateQueries({
         queryKey: getAccountWalletListQueryOptions(username).queryKey,
-      }),
+      });
+    },
   });
 }
