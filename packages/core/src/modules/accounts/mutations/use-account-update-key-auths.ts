@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import * as R from "remeda";
 import { getAccountFullQueryOptions } from "../queries";
 
-interface Keys {
+export interface Keys {
   owner: PrivateKey;
   active: PrivateKey;
   posting: PrivateKey;
@@ -17,7 +17,7 @@ interface Payload {
   keys: Keys[];
 }
 
-function dedupeAndSortKeyAuths(
+export function dedupeAndSortKeyAuths(
   existing: AuthorityType["key_auths"],
   additions: [string, number][]
 ) {

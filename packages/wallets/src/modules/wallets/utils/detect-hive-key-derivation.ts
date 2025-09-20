@@ -1,4 +1,5 @@
-import { Client, PrivateKey } from "@hiveio/dhive";
+import { CONFIG, FullAccount, getAccountFullQueryOptions } from "@ecency/sdk";
+import { PrivateKey } from "@hiveio/dhive";
 import { deriveHiveKeys } from "./derive-hive-bip44-keys";
 
 export type HiveKeyDerivation = "bip44" | "master-password" | "unknown";
@@ -6,9 +7,12 @@ export type HiveKeyDerivation = "bip44" | "master-password" | "unknown";
 export async function detectHiveKeyDerivation(
   username: string,
   seed: string,
-  client = new Client("https://api.hive.blog")
+  type: "active" | "owner" = "active"
 ): Promise<HiveKeyDerivation> {
-  const [account] = await client.database.getAccounts([username]);
+  await CONFIG.queryClient.prefetchQuery(getAccountFullQueryOptions(username));
+  const account = CONFIG.queryClient.getQueryData(
+    getAccountFullQueryOptions(username).queryKey
+  ) as FullAccount;
   if (!account) {
     throw new Error(`[Ecency][Wallets] - account ${username} not found`);
   }
@@ -22,14 +26,10 @@ export async function detectHiveKeyDerivation(
     return "bip44";
   }
 
-  const legacyActive = PrivateKey.fromLogin(
-    username,
-    seed,
-    "active"
-  )
+  const legacyActive = PrivateKey.fromLogin(username, seed, type)
     .createPublic()
     .toString();
-  const matchLegacy = account.active.key_auths.some(
+  const matchLegacy = account[type].key_auths.some(
     ([pub]) => pub.toString() === legacyActive
   );
   if (matchLegacy) {

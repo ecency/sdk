@@ -6,3 +6,4 @@ export * from "./use-account-update-key-auths";
 export * from "./use-account-update-password";
 export * from "./use-account-revoke-posting";
 export * from "./use-account-update-recovery";
+export * from "./use-account-revoke-key";
