@@ -1,5 +1,5 @@
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { LRUCache } from "lru-cache";
 
 const options = {
@@ -29,8 +29,8 @@ interface CoinGeckoApiResponse {
   };
 }
 
-export function useCoinGeckoPriceQuery(currency?: EcencyWalletCurrency) {
-  return useQuery({
+export function getCoinGeckoPriceQueryOptions(currency?: string) {
+  return queryOptions({
     queryKey: ["ecency-wallets", "coingecko-price", currency],
     queryFn: async () => {
       let curr = currency as string;

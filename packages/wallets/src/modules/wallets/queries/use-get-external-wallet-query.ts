@@ -60,7 +60,7 @@ interface AtomResponse {
  */
 export function useGetExternalWalletBalanceQuery(
   currency: EcencyWalletCurrency,
-  address: string,
+  address: string
 ) {
   return useQuery({
     queryKey: ["ecency-wallets", "external-wallet-balance", currency, address],
@@ -152,7 +152,7 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.BTC:
           return withFallback(async () => {
             const btcResponse = await fetch(
-              `https://mempool.space/api/address/${address}`,
+              `https://mempool.space/api/address/${address}`
             );
             if (!btcResponse.ok) throw new Error("Mempool API request failed");
             const btcResponseData =
@@ -167,7 +167,7 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.ETH:
           return withFallback(async () => {
             const ethResponse = await fetch(
-              `https://api.ethplorer.io/getAddressInfo/${address}?apiKey=freekey`,
+              `https://api.ethplorer.io/getAddressInfo/${address}?apiKey=freekey`
             );
             if (!ethResponse.ok)
               throw new Error("Ethplorer API request failed");
@@ -191,7 +191,7 @@ export function useGetExternalWalletBalanceQuery(
                 headers: {
                   "Content-Type": "application/json",
                 },
-              },
+              }
             );
             if (!solResponse.ok) throw new Error("Helius API request failed");
             const solResponseData = (await solResponse.json()) as SolResponse;
@@ -201,7 +201,7 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.TRON:
           return withFallback(async () => {
             const tronResponse = await fetch(
-              `https://api.trongrid.io/v1/accounts/${address}`,
+              `https://api.trongrid.io/v1/accounts/${address}`
             );
             if (!tronResponse.ok)
               throw new Error("Trongrid API request failed");
@@ -213,7 +213,7 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.TON:
           return withFallback(async () => {
             const tonResponse = await fetch(
-              `https://tonapi.io/v1/blockchain/getAccount?account=${address}`,
+              `https://tonapi.io/v1/blockchain/getAccount?account=${address}`
             );
             if (!tonResponse.ok) throw new Error("Ton API request failed");
             const tonResponseData =
@@ -224,13 +224,13 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.APT:
           return withFallback(async () => {
             const aptResponse = await fetch(
-              `https://fullnode.mainnet.aptoslabs.com/v1/accounts/${address}/resources`,
+              `https://fullnode.mainnet.aptoslabs.com/v1/accounts/${address}/resources`
             );
             if (!aptResponse.ok) throw new Error("Aptos API request failed");
             const aptResponseData =
               (await aptResponse.json()) as AptosLabsResponse[];
             const coinStore = aptResponseData.find((resource) =>
-              resource.type.includes("coin::CoinStore"),
+              resource.type.includes("coin::CoinStore")
             );
             if (!coinStore) return 0;
 
@@ -240,7 +240,7 @@ export function useGetExternalWalletBalanceQuery(
         case EcencyWalletCurrency.ATOM:
           return withFallback(async () => {
             const atomResponse = await fetch(
-              `https://rest.cosmos.directory/cosmoshub/auth/accounts/${address}`,
+              `https://rest.cosmos.directory/cosmoshub/auth/accounts/${address}`
             );
             if (!atomResponse.ok) throw new Error("Cosmos API request failed");
             const atomResponseData =

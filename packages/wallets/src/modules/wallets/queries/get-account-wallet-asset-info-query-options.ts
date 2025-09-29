@@ -12,6 +12,15 @@ import {
 import { getQueryClient } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { HiveEngineTokens } from "../consts";
+import {
+  getAptAssetGeneralInfoQueryOptions,
+  getAtomAssetGeneralInfoQueryOptions,
+  getBtcAssetGeneralInfoQueryOptions,
+  getEthAssetGeneralInfoQueryOptions,
+  getSolAssetGeneralInfoQueryOptions,
+  getTonAssetGeneralInfoQueryOptions,
+  getTronAssetGeneralInfoQueryOptions,
+} from "@/modules/assets/external";
 
 interface Options {
   refetch: boolean;
@@ -51,6 +60,20 @@ export function getAccountWalletAssetInfoQueryOptions(
         return fetchQuery(getLarynxPowerAssetGeneralInfoQueryOptions(username));
       } else if (asset === "POINTS") {
         return fetchQuery(getPointsAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "APT") {
+        return fetchQuery(getAptAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "ATOM") {
+        return fetchQuery(getAtomAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "BTC") {
+        return fetchQuery(getBtcAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "ETH") {
+        return fetchQuery(getEthAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "SOL") {
+        return fetchQuery(getSolAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "TON") {
+        return fetchQuery(getTonAssetGeneralInfoQueryOptions(username));
+      } else if (asset === "TRX") {
+        return fetchQuery(getTronAssetGeneralInfoQueryOptions(username));
       } else if (HiveEngineTokens.includes(asset)) {
         return await fetchQuery(
           getHiveEngineTokenGeneralInfoQueryOptions(username, asset)
