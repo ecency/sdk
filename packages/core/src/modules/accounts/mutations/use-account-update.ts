@@ -28,7 +28,7 @@ function getBuiltProfile({
   data,
 }: Partial<Payload> & { data: FullAccount }) {
   const metadata = R.pipe(
-    JSON.parse(data?.posting_json_metadata || "{}") as AccountProfile,
+    JSON.parse(data?.posting_json_metadata || "{}").profile as AccountProfile,
     R.mergeDeep(profile ?? {})
   );
 
