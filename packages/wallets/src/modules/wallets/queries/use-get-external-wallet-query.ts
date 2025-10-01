@@ -105,10 +105,20 @@ interface AptosLabsResponse {
  * @param address
  * @returns
  */
+interface UseGetExternalWalletBalanceQueryOptions {
+  /**
+   * When true, Chainstack will be queried before Bitquery and public APIs.
+   */
+  reverseProviderOrder?: boolean;
+}
+
 export function useGetExternalWalletBalanceQuery(
   currency: EcencyWalletCurrency,
   address: string,
+  options: UseGetExternalWalletBalanceQueryOptions = {},
 ) {
+  const { reverseProviderOrder = false } = options;
+
   return useQuery({
     queryKey: ["ecency-wallets", "external-wallet-balance", currency, address],
     queryFn: async () => {
@@ -169,27 +179,33 @@ export function useGetExternalWalletBalanceQuery(
       };
 
       const withFallback = async (primary: () => Promise<number>) => {
-        try {
-          return await primary();
-        } catch (primaryErr) {
+        const providers = reverseProviderOrder
+          ? [
+              () => fetchGraphqlBalance("chainstack"),
+              () => fetchGraphqlBalance("bitquery"),
+              primary,
+            ]
+          : [
+              primary,
+              () => fetchGraphqlBalance("bitquery"),
+              () => fetchGraphqlBalance("chainstack"),
+            ];
+
+        let lastError: unknown;
+
+        for (const provider of providers) {
           try {
-            return await fetchGraphqlBalance("bitquery");
-          } catch (bitqueryErr) {
-            try {
-              return await fetchGraphqlBalance("chainstack");
-            } catch (chainstackErr) {
-              if (chainstackErr instanceof Error) {
-                throw chainstackErr;
-              }
-
-              if (bitqueryErr instanceof Error) {
-                throw bitqueryErr;
-              }
-
-              throw primaryErr;
-            }
+            return await provider();
+          } catch (err) {
+            lastError = err;
           }
         }
+
+        if (lastError instanceof Error) {
+          throw lastError;
+        }
+
+        throw new Error("Failed to fetch external wallet balance");
       };
 
       switch (currency) {

@@ -61,5 +61,12 @@ const { data: btcBalance } = useGetExternalWalletBalanceQuery(
   EcencyWalletCurrency.BTC,
   '1BitcoinAddress...'
 );
+
+// query with Chainstack priority before Bitquery and public APIs
+const { data: btcBalanceChainstackFirst } = useGetExternalWalletBalanceQuery(
+  EcencyWalletCurrency.BTC,
+  '1BitcoinAddress...',
+  { reverseProviderOrder: true }
+);
 ```
 
