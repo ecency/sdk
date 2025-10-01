@@ -1,8 +1,8 @@
 export enum EcencyWalletCurrency {
   BTC = "BTC",
   ETH = "ETH",
+  BNB = "BNB",
   APT = "APT",
-  ATOM = "ATOM",
   TON = "TON",
   TRON = "TRX",
   SOL = "SOL",

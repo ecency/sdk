@@ -5,7 +5,6 @@ import type { EthTxParams } from "@okxweb3/coin-ethereum/dist/EthWallet";
 import type { SolSignParam } from "@okxweb3/coin-solana/dist/SolWallet";
 import type { TrxSignParam } from "@okxweb3/coin-tron/dist/TrxWallet";
 import type { TxData as TonTxData } from "@okxweb3/coin-ton/dist/api/types";
-import type { CosmosSignParam } from "@okxweb3/coin-cosmos/dist/CosmosWallet";
 import type { AptosParam } from "@okxweb3/coin-aptos/dist/AptosWallet";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 
@@ -18,7 +17,6 @@ export type ExternalTxParams =
   | SolSignParam
   | TrxSignParam
   | TonTxData
-  | CosmosSignParam
   | AptosParam;
 
 /**
@@ -66,13 +64,6 @@ export function buildTonTx(data: TonTxData): TonTxData {
 }
 
 /**
- * Helper returning Cosmos transaction params used by signExternalTx.
- */
-export function buildAtomTx(data: CosmosSignParam): CosmosSignParam {
-  return data;
-}
-
-/**
  * Helper returning Aptos transaction params used by signExternalTx.
  */
 export function buildAptTx(data: AptosParam): AptosParam {
@@ -93,6 +84,7 @@ export function buildExternalTx(
     case EcencyWalletCurrency.BTC:
       return buildPsbt(tx as utxoTx);
     case EcencyWalletCurrency.ETH:
+    case EcencyWalletCurrency.BNB:
       return buildEthTx(tx as EthTxParams);
     case EcencyWalletCurrency.SOL:
       return buildSolTx(tx as SolSignParam);
@@ -100,8 +92,6 @@ export function buildExternalTx(
       return buildTronTx(tx as TrxSignParam);
     case EcencyWalletCurrency.TON:
       return buildTonTx(tx as TonTxData);
-    case EcencyWalletCurrency.ATOM:
-      return buildAtomTx(tx as CosmosSignParam);
     case EcencyWalletCurrency.APT:
       return buildAptTx(tx as AptosParam);
     default:

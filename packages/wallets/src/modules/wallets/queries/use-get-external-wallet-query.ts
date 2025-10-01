@@ -2,6 +2,59 @@ import { CONFIG } from "@ecency/sdk";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
 import { useQuery } from "@tanstack/react-query";
 
+type BalanceQueryDefinition = {
+  query: (address: string) => string;
+  parse: (data: any) => number | undefined;
+  scale: number;
+};
+
+const balanceQueryMap: Partial<
+  Record<EcencyWalletCurrency, BalanceQueryDefinition>
+> = {
+  [EcencyWalletCurrency.BTC]: {
+    query: (addr) =>
+      `{"query":"{ bitcoin { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.bitcoin?.address?.[0]?.balance,
+    scale: 1e8,
+  },
+  [EcencyWalletCurrency.ETH]: {
+    query: (addr) =>
+      `{"query":"{ ethereum { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.ethereum?.address?.[0]?.balance,
+    scale: 1e18,
+  },
+  [EcencyWalletCurrency.BNB]: {
+    query: (addr) =>
+      `{"query":"{ ethereum(network: bsc) { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.ethereum?.address?.[0]?.balance,
+    scale: 1e18,
+  },
+  [EcencyWalletCurrency.SOL]: {
+    query: (addr) =>
+      `{"query":"{ solana { account(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.solana?.account?.[0]?.balance,
+    scale: 1e9,
+  },
+  [EcencyWalletCurrency.TRON]: {
+    query: (addr) =>
+      `{"query":"{ tron { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.tron?.address?.[0]?.balance,
+    scale: 1e6,
+  },
+  [EcencyWalletCurrency.TON]: {
+    query: (addr) =>
+      `{"query":"{ ton { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.ton?.address?.[0]?.balance,
+    scale: 1e9,
+  },
+  [EcencyWalletCurrency.APT]: {
+    query: (addr) =>
+      `{"query":"{ aptos { address(address: {is: \"${addr}\"}) { balance } } }"}`,
+    parse: (data) => data.aptos?.address?.[0]?.balance,
+    scale: 1e8,
+  },
+};
+
 interface MempoolResponse {
   chain_stats: {
     funded_txo_sum: number; // in satoshi
@@ -31,6 +84,11 @@ interface TonApiResponse {
   balance: number; // in nanotons
 }
 
+interface BscScanResponse {
+  status: string;
+  result: string; // balance in wei
+}
+
 interface AptosLabsResponse {
   type: string; // "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
   data: {
@@ -40,20 +98,9 @@ interface AptosLabsResponse {
   };
 }
 
-interface AtomResponse {
-  result: {
-    value: {
-      coins: {
-        amount: number | string; // in microATOMs
-      }[];
-    };
-  };
-}
-
 /**
  * Returns information about the actual balance of the given currency address
  *         using various of public APIs
- * todo extract URLs to configs
  * @param currency
  * @param address
  * @returns
@@ -65,75 +112,60 @@ export function useGetExternalWalletBalanceQuery(
   return useQuery({
     queryKey: ["ecency-wallets", "external-wallet-balance", currency, address],
     queryFn: async () => {
-      const fetchBitqueryBalance = async () => {
-        const bitqueryMap: Record<
-          EcencyWalletCurrency,
-          {
-            query: (address: string) => string;
-            parse: (data: any) => number | undefined;
-            scale: number;
-          }
-        > = {
-          [EcencyWalletCurrency.BTC]: {
-            query: (addr) =>
-              `{"query":"{ bitcoin { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.bitcoin?.address?.[0]?.balance,
-            scale: 1e8,
-          },
-          [EcencyWalletCurrency.ETH]: {
-            query: (addr) =>
-              `{"query":"{ ethereum { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.ethereum?.address?.[0]?.balance,
-            scale: 1e18,
-          },
-          [EcencyWalletCurrency.SOL]: {
-            query: (addr) =>
-              `{"query":"{ solana { account(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.solana?.account?.[0]?.balance,
-            scale: 1e9,
-          },
-          [EcencyWalletCurrency.TRON]: {
-            query: (addr) =>
-              `{"query":"{ tron { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.tron?.address?.[0]?.balance,
-            scale: 1e6,
-          },
-          [EcencyWalletCurrency.TON]: {
-            query: (addr) =>
-              `{"query":"{ ton { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.ton?.address?.[0]?.balance,
-            scale: 1e9,
-          },
-          [EcencyWalletCurrency.APT]: {
-            query: (addr) =>
-              `{"query":"{ aptos { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.aptos?.address?.[0]?.balance,
-            scale: 1e8,
-          },
-          [EcencyWalletCurrency.ATOM]: {
-            query: (addr) =>
-              `{"query":"{ cosmos { address(address: {is: \"${addr}\"}) { balance } } }"}`,
-            parse: (data) => data.cosmos?.address?.[0]?.balance,
-            scale: 1e6,
-          },
-        };
-        const def = bitqueryMap[currency];
-        if (!def) throw new Error("Unsupported currency for Bitquery");
-        const response = await fetch("https://graphql.bitquery.io", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": CONFIG.bitqueryApiKey || "",
-          },
-          body: def.query(address),
-        });
-        if (!response.ok) throw new Error("Bitquery request failed");
-        const result = (await response.json()) as any;
-        const balance = def.parse(result.data);
-        if (typeof balance !== "number") {
-          throw new Error("Bitquery returned invalid balance");
+      const fetchGraphqlBalance = async (
+        provider: "bitquery" | "chainstack",
+      ) => {
+        const definition = balanceQueryMap[currency];
+        if (!definition) {
+          throw new Error(`Unsupported currency for ${provider}`);
         }
-        return balance / def.scale;
+
+        const endpoint =
+          provider === "bitquery"
+            ? CONFIG.bitqueryApiUrl
+            : CONFIG.chainstackApiUrl;
+
+        if (!endpoint) {
+          throw new Error(
+            provider === "bitquery"
+              ? "Bitquery API URL is not configured"
+              : "Chainstack API URL is not configured",
+          );
+        }
+
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+
+        if (provider === "bitquery") {
+          headers["X-API-KEY"] = CONFIG.bitqueryApiKey || "";
+        } else if (CONFIG.chainstackApiKey) {
+          headers["X-API-KEY"] = CONFIG.chainstackApiKey;
+        }
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers,
+          body: definition.query(address),
+        });
+        if (!response.ok) {
+          throw new Error(
+            provider === "bitquery"
+              ? "Bitquery request failed"
+              : "Chainstack request failed",
+          );
+        }
+
+        const result = (await response.json()) as any;
+        const balance = definition.parse(result.data);
+        if (typeof balance !== "number") {
+          throw new Error(
+            provider === "bitquery"
+              ? "Bitquery returned invalid balance"
+              : "Chainstack returned invalid balance",
+          );
+        }
+        return balance / definition.scale;
       };
 
       const withFallback = async (primary: () => Promise<number>) => {
@@ -141,9 +173,21 @@ export function useGetExternalWalletBalanceQuery(
           return await primary();
         } catch (primaryErr) {
           try {
-            return await fetchBitqueryBalance();
-          } catch {
-            throw primaryErr;
+            return await fetchGraphqlBalance("bitquery");
+          } catch (bitqueryErr) {
+            try {
+              return await fetchGraphqlBalance("chainstack");
+            } catch (chainstackErr) {
+              if (chainstackErr instanceof Error) {
+                throw chainstackErr;
+              }
+
+              if (bitqueryErr instanceof Error) {
+                throw bitqueryErr;
+              }
+
+              throw primaryErr;
+            }
           }
         }
       };
@@ -174,6 +218,22 @@ export function useGetExternalWalletBalanceQuery(
             const ethResponseData =
               (await ethResponse.json()) as EthExplorerResponse;
             return +ethResponseData.ETH.balance;
+          });
+
+        case EcencyWalletCurrency.BNB:
+          return withFallback(async () => {
+            const bnbResponse = await fetch(
+              `https://api.bscscan.com/api?module=account&action=balance&address=${address}&tag=latest&apikey=YourApiKeyToken`,
+            );
+            if (!bnbResponse.ok)
+              throw new Error("BscScan API request failed");
+            const bnbResponseData =
+              (await bnbResponse.json()) as BscScanResponse;
+            if (bnbResponseData.status !== "1") {
+              throw new Error("BscScan API returned an error");
+            }
+
+            return parseInt(bnbResponseData.result, 10) / 1e18;
           });
 
         case EcencyWalletCurrency.SOL:
@@ -236,17 +296,8 @@ export function useGetExternalWalletBalanceQuery(
 
             return parseInt(coinStore.data.coin.value) / 1e8;
           });
-
-        case EcencyWalletCurrency.ATOM:
-          return withFallback(async () => {
-            const atomResponse = await fetch(
-              `https://rest.cosmos.directory/cosmoshub/auth/accounts/${address}`,
-            );
-            if (!atomResponse.ok) throw new Error("Cosmos API request failed");
-            const atomResponseData =
-              (await atomResponse.json()) as AtomResponse;
-            return +atomResponseData.result.value.coins[0].amount / 1e6;
-          });
+        default:
+          throw new Error(`Unsupported currency ${currency}`);
       }
     },
   });

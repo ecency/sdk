@@ -25,7 +25,6 @@ export default defineConfig({
         "@okxweb3/coin-aptos",
         "@okxweb3/coin-base",
         "@okxweb3/coin-bitcoin",
-        "@okxweb3/coin-cosmos",
         "@okxweb3/coin-ethereum",
         "@okxweb3/coin-solana",
         "@okxweb3/coin-ton",

@@ -8,11 +8,11 @@ import { useCallback } from "react";
 const PATHS = {
   [EcencyWalletCurrency.BTC]: "m/44'/0'/0'/0/0", // Bitcoin (BIP44)
   [EcencyWalletCurrency.ETH]: "m/44'/60'/0'/0/0", // Ethereum (BIP44)
+  [EcencyWalletCurrency.BNB]: "m/44'/60'/0'/0/0", // BNB Smart Chain (BIP44)
   [EcencyWalletCurrency.SOL]: "m/44'/501'/0'/0'", // Solana (BIP44)
   [EcencyWalletCurrency.TON]: "m/44'/607'/0'", // TON (BIP44)
   [EcencyWalletCurrency.TRON]: "m/44'/195'/0'/0/0", // Tron (BIP44)
   [EcencyWalletCurrency.APT]: "m/44'/637'/0'/0'/0'", // Aptos (BIP44)
-  [EcencyWalletCurrency.ATOM]: "m/44'/118'/0'/0/0", // Cosmos (BIP44)
 } as const;
 
 /**
