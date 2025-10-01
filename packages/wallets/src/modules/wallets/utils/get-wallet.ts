@@ -3,7 +3,6 @@ import { EthWallet } from "@okxweb3/coin-ethereum";
 import { TrxWallet } from "@okxweb3/coin-tron";
 import { TonWallet } from "@okxweb3/coin-ton";
 import { SolWallet } from "@okxweb3/coin-solana";
-import { AtomWallet } from "@okxweb3/coin-cosmos";
 import { AptosWallet } from "@okxweb3/coin-aptos";
 import { BaseWallet } from "@okxweb3/coin-base";
 import { EcencyWalletCurrency } from "@/modules/wallets/enums";
@@ -15,6 +14,7 @@ export function getWallet(
     case EcencyWalletCurrency.BTC:
       return new BtcWallet();
     case EcencyWalletCurrency.ETH:
+    case EcencyWalletCurrency.BNB:
       return new EthWallet();
 
     case EcencyWalletCurrency.TRON:
@@ -25,9 +25,6 @@ export function getWallet(
 
     case EcencyWalletCurrency.SOL:
       return new SolWallet();
-
-    case EcencyWalletCurrency.ATOM:
-      return new AtomWallet();
 
     case EcencyWalletCurrency.APT:
       return new AptosWallet();

@@ -41,8 +41,13 @@ export async function signExternalTxAndBroadcast(
       if (!res.ok) throw new Error("Broadcast failed");
       return res.text();
     }
-    case EcencyWalletCurrency.ETH: {
-      const res = await fetch("https://rpc.ankr.com/eth", {
+    case EcencyWalletCurrency.ETH:
+    case EcencyWalletCurrency.BNB: {
+      const rpcUrl =
+        currency === EcencyWalletCurrency.ETH
+          ? "https://rpc.ankr.com/eth"
+          : "https://bsc-dataseed.binance.org";
+      const res = await fetch(rpcUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -95,21 +100,6 @@ export async function signExternalTxAndBroadcast(
       });
       const json = await res.json();
       if (json.error) throw new Error(json.error.message || json.result);
-      return json.result;
-    }
-    case EcencyWalletCurrency.ATOM: {
-      const res = await fetch("https://cosmos-rpc.publicnode.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "broadcast_tx_sync",
-          params: [signed],
-        }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error.message);
       return json.result;
     }
     case EcencyWalletCurrency.APT: {
