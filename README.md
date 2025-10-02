@@ -39,8 +39,9 @@ This package is built on top of [@hiveio/dhive](https://www.npmjs.com/package/@h
 
 The main functionality is creating wallets based on seed phrase([BIP39](https://www.npmjs.com/package/bip39)) and generating addresses with keys on device. Seed phrases and private keys are never sent to any API, all operations happen locally.
 
-Supported tokens: BTC, ETH, SOL, TRX, TON, ATOM, APT—theoretically all child tokens of these systems. Make forks for it.
-Use `useGetExternalWalletBalanceQuery` to fetch balances for these chains.
+Supported tokens: BTC, ETH, SOL, TRON, TON, ATOM, APT—theoretically all child tokens of these systems. Make forks for it.
+Use `useGetExternalWalletBalanceQuery` to fetch balances for these chains through Ecency's private API. The hook resolves to the
+raw base-unit balance (`balanceString` and `balanceBigInt`) together with the units reported by the upstream node.
 
 ### Hive helpers
 

@@ -13,7 +13,7 @@ Utilities for managing Hive blockchain wallets and external cryptocurrency walle
 - `buildExternalTx` – construct transactions or PSBTs for external chains
 - `encryptMemoWithKeys` / `decryptMemoWithKeys` – encrypt or decrypt memos using explicit keys
 - `encryptMemoWithAccounts` / `decryptMemoWithAccounts` – encrypt or decrypt memos by looking up account memo keys
-- `useGetExternalWalletBalanceQuery` – retrieve balances for external wallets such as BTC, ETH, BNB, SOL, TRX, TON, or APT
+- `useGetExternalWalletBalanceQuery` – retrieve balances for external wallets such as BTC, ETH, BNB, SOL, TRON, TON, or APT through Ecency's private API
 
 ## Installation
 
@@ -62,11 +62,8 @@ const { data: btcBalance } = useGetExternalWalletBalanceQuery(
   '1BitcoinAddress...'
 );
 
-// query with Chainstack priority before Bitquery and public APIs
-const { data: btcBalanceChainstackFirst } = useGetExternalWalletBalanceQuery(
-  EcencyWalletCurrency.BTC,
-  '1BitcoinAddress...',
-  { reverseProviderOrder: true }
-);
+if (btcBalance) {
+  // balances are returned in base units (satoshis for BTC, wei for ETH, etc.)
+  console.log(btcBalance.balanceString, btcBalance.unit);
+}
 ```
-
