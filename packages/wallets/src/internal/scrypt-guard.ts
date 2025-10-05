@@ -1,33 +1,29 @@
+/**
+ * The scrypt bsv package writes the version string to a global symbol and
+ * warns when that symbol is already populated.  In environments that reload
+ * modules (Next.js dev server, Storybook, etc.) the stale value triggers
+ * repeated warnings.  Clearing the cached handle before our modules touch bsv
+ * keeps the console quiet without requiring downstream wrappers.
+ */
 const globalLike = globalThis as Record<string, unknown> & {
   _scrypt_bsv?: unknown;
-  __scryptBsvVersion?: unknown;
-  __scryptWarningsPatched?: boolean;
+  __scryptBsvPreviousVersion?: unknown;
 };
 
-const knownVersion = globalLike.__scryptBsvVersion;
-if (typeof knownVersion === "string" && globalLike._scrypt_bsv === knownVersion) {
-  delete globalLike._scrypt_bsv;
-}
+if (typeof globalLike._scrypt_bsv !== "undefined") {
+  if (typeof globalLike._scrypt_bsv === "string") {
+    globalLike.__scryptBsvPreviousVersion = globalLike._scrypt_bsv;
+  }
 
-if (!globalLike.__scryptWarningsPatched) {
-  const originalWarn = console.warn.bind(console);
-  console.warn = (...args: unknown[]) => {
-    const [first] = args;
-    if (typeof first === "string") {
-      if (first.includes("More than one instance of scrypt bsv found")) {
-        return;
-      }
-      if (first.includes("bigint: Failed to load bindings")) {
-        return;
-      }
-    }
-    originalWarn(...(args as Parameters<typeof console.warn>));
-  };
-  globalLike.__scryptWarningsPatched = true;
+  try {
+    delete globalLike._scrypt_bsv;
+  } catch {
+    globalLike._scrypt_bsv = undefined;
+  }
 }
 
 export function rememberScryptBsvVersion() {
-  if (typeof globalLike._scrypt_bsv !== "undefined") {
-    globalLike.__scryptBsvVersion = globalLike._scrypt_bsv;
+  if (typeof globalLike._scrypt_bsv === "string") {
+    globalLike.__scryptBsvPreviousVersion = globalLike._scrypt_bsv;
   }
 }
