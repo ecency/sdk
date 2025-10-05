@@ -3,6 +3,7 @@ import { GeneralAssetInfo } from "../../types";
 import { CONFIG } from "@ecency/sdk";
 import { getBtcAssetBalanceQueryOptions } from "./get-btc-asset-balance-query-options";
 import { getCoinGeckoPriceQueryOptions } from "@/modules/wallets";
+import { getAddressFromAccount } from "../common";
 
 export function getBtcAssetGeneralInfoQueryOptions(username: string) {
   return queryOptions({
@@ -10,13 +11,15 @@ export function getBtcAssetGeneralInfoQueryOptions(username: string) {
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
+      const address = await getAddressFromAccount(username, "BTC");
+
       await CONFIG.queryClient.fetchQuery(
-        getBtcAssetBalanceQueryOptions(username)
+        getBtcAssetBalanceQueryOptions(address)
       );
       const accountBalance =
-        CONFIG.queryClient.getQueryData<number>(
-          getBtcAssetBalanceQueryOptions(username).queryKey
-        ) ?? 0;
+        (CONFIG.queryClient.getQueryData<number>(
+          getBtcAssetBalanceQueryOptions(address).queryKey
+        ) ?? 0) / 1e8;
 
       await CONFIG.queryClient.prefetchQuery(
         getCoinGeckoPriceQueryOptions("BTC")

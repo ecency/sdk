@@ -1,32 +1,29 @@
+import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { getAddressFromAccount } from "../common";
+import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-interface AptosLabsResponse {
-  type: string; // "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
-  data: {
-    coin: {
-      value: string; // Баланс в микроAPT (нужно делить на 1e8)
-    };
-  };
-}
-
-export function getAptAssetBalanceQueryOptions(username: string) {
+export function getAptAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "apt", "balance", username],
+    queryKey: ["assets", "apt", "balance", address],
     queryFn: async () => {
-      const address = await getAddressFromAccount(username, "APT");
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/apt/${encodeURIComponent(
+        address
+      )}`;
 
-      const aptResponse = await fetch(
-        `https://fullnode.mainnet.aptoslabs.com/v1/accounts/${address}/resources`
-      );
-      if (!aptResponse.ok) throw new Error("Aptos API request failed");
-      const aptResponseData = (await aptResponse.json()) as AptosLabsResponse[];
-      const coinStore = aptResponseData.find((resource) =>
-        resource.type.includes("coin::CoinStore")
-      );
-      if (!coinStore) return 0;
+      try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+          throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
+        }
+        return +parsePrivateApiBalance(await response.json(), "apt")
+          .balanceString;
+      } catch (error) {
+        console.error(error);
 
-      return parseInt(coinStore.data.coin.value) / 1e8;
+        const response = await fetch(`${baseUrl}?provider=chainz`);
+        return +parsePrivateApiBalance(await response.json(), "apt")
+          .balanceString;
+      }
     },
   });
 }

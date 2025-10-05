@@ -3,6 +3,7 @@ import { GeneralAssetInfo } from "../../types";
 import { CONFIG } from "@ecency/sdk";
 import { getAptAssetBalanceQueryOptions } from "./get-apt-asset-balance-query-options";
 import { getCoinGeckoPriceQueryOptions } from "@/modules/wallets";
+import { getAddressFromAccount } from "../common";
 
 export function getAptAssetGeneralInfoQueryOptions(username: string) {
   return queryOptions({
@@ -10,13 +11,15 @@ export function getAptAssetGeneralInfoQueryOptions(username: string) {
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
+      const address = await getAddressFromAccount(username, "APT");
+
       await CONFIG.queryClient.fetchQuery(
-        getAptAssetBalanceQueryOptions(username)
+        getAptAssetBalanceQueryOptions(address)
       );
       const accountBalance =
-        CONFIG.queryClient.getQueryData<number>(
-          getAptAssetBalanceQueryOptions(username).queryKey
-        ) ?? 0;
+        (CONFIG.queryClient.getQueryData<number>(
+          getAptAssetBalanceQueryOptions(address).queryKey
+        ) ?? 0) / 1e8;
 
       await CONFIG.queryClient.prefetchQuery(
         getCoinGeckoPriceQueryOptions("APT")

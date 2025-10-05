@@ -1,37 +1,29 @@
 import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { getAddressFromAccount } from "../common";
+import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-interface SolResponse {
-  result: {
-    value: number; // in lamports
-  };
-}
-
-export function getSolAssetBalanceQueryOptions(username: string) {
+export function getSolAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "sol", "balance", username],
+    queryKey: ["assets", "sol", "balance", address],
     queryFn: async () => {
-      const address = await getAddressFromAccount(username, "SOL");
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/sol/${encodeURIComponent(
+        address
+      )}`;
 
-      const solResponse = await fetch(
-        `https://rpc.helius.xyz/?api-key=${CONFIG.heliusApiKey}`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            id: "1",
-            method: "getBalance",
-            params: [address],
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+      try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+          throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
         }
-      );
-      if (!solResponse.ok) throw new Error("Helius API request failed");
-      const solResponseData = (await solResponse.json()) as SolResponse;
-      return solResponseData.result.value / 1e9;
+        return +parsePrivateApiBalance(await response.json(), "sol")
+          .balanceString;
+      } catch (error) {
+        console.error(error);
+
+        const response = await fetch(`${baseUrl}?provider=chainz`);
+        return +parsePrivateApiBalance(await response.json(), "sol")
+          .balanceString;
+      }
     },
   });
 }

@@ -1,29 +1,29 @@
+import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { getAddressFromAccount } from "../common";
+import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-interface MempoolResponse {
-  chain_stats: {
-    funded_txo_sum: number; // in satoshi
-    spent_txo_sum: number; // in satoshi
-  };
-}
-
-export function getBtcAssetBalanceQueryOptions(username: string) {
+export function getBtcAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "btc", "balance", username],
+    queryKey: ["assets", "btc", "balance", address],
     queryFn: async () => {
-      const address = await getAddressFromAccount(username, "APT");
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/btc/${encodeURIComponent(
+        address
+      )}`;
 
-      const btcResponse = await fetch(
-        `https://mempool.space/api/address/${address}`
-      );
-      if (!btcResponse.ok) throw new Error("Mempool API request failed");
-      const btcResponseData = (await btcResponse.json()) as MempoolResponse;
-      return (
-        (btcResponseData.chain_stats.funded_txo_sum -
-          btcResponseData.chain_stats.spent_txo_sum) /
-        1e8
-      );
+      try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+          throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
+        }
+        return +parsePrivateApiBalance(await response.json(), "btc")
+          .balanceString;
+      } catch (error) {
+        console.error(error);
+
+        const response = await fetch(`${baseUrl}?provider=chainz`);
+        return +parsePrivateApiBalance(await response.json(), "btc")
+          .balanceString;
+      }
     },
   });
 }

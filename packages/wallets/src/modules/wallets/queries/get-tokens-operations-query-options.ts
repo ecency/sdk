@@ -68,6 +68,14 @@ export function getTokenOperationsQueryOptions(
             AssetOperation.Delegate,
             ...(isForOwner ? [AssetOperation.PowerDown] : []),
           ];
+        case "APT":
+        case "BNB":
+        case "BTC":
+        case "ETH":
+        case "SOL":
+        case "TON":
+        case "TRX":
+          return [];
       }
 
       const balancesListQuery =

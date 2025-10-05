@@ -1,22 +1,29 @@
+import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { getAddressFromAccount } from "../common";
+import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-interface TonApiResponse {
-  balance: number; // in nanotons
-}
-
-export function getTonAssetBalanceQueryOptions(username: string) {
+export function getTonAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "ton", "balance", username],
+    queryKey: ["assets", "ton", "balance", address],
     queryFn: async () => {
-      const address = await getAddressFromAccount(username, "TON");
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/ton/${encodeURIComponent(
+        address
+      )}`;
 
-      const tonResponse = await fetch(
-        `https://tonapi.io/v1/blockchain/getAccount?account=${address}`
-      );
-      if (!tonResponse.ok) throw new Error("Ton API request failed");
-      const tonResponseData = (await tonResponse.json()) as TonApiResponse;
-      return tonResponseData.balance / 1e9;
+      try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+          throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
+        }
+        return +parsePrivateApiBalance(await response.json(), "ton")
+          .balanceString;
+      } catch (error) {
+        console.error(error);
+
+        const response = await fetch(`${baseUrl}?provider=chainz`);
+        return +parsePrivateApiBalance(await response.json(), "ton")
+          .balanceString;
+      }
     },
   });
 }

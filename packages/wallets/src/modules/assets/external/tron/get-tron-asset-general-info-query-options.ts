@@ -3,6 +3,7 @@ import { GeneralAssetInfo } from "../../types";
 import { CONFIG } from "@ecency/sdk";
 import { getTronAssetBalanceQueryOptions } from "./get-tron-asset-balance-query-options";
 import { getCoinGeckoPriceQueryOptions } from "@/modules/wallets";
+import { getAddressFromAccount } from "../common";
 
 export function getTronAssetGeneralInfoQueryOptions(username: string) {
   return queryOptions({
@@ -10,13 +11,14 @@ export function getTronAssetGeneralInfoQueryOptions(username: string) {
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
+      const address = await getAddressFromAccount(username, "TRX");
       await CONFIG.queryClient.fetchQuery(
-        getTronAssetBalanceQueryOptions(username)
+        getTronAssetBalanceQueryOptions(address)
       );
       const accountBalance =
-        CONFIG.queryClient.getQueryData<number>(
-          getTronAssetBalanceQueryOptions(username).queryKey
-        ) ?? 0;
+        (CONFIG.queryClient.getQueryData<number>(
+          getTronAssetBalanceQueryOptions(address).queryKey
+        ) ?? 0) / 1e6;
 
       await CONFIG.queryClient.prefetchQuery(
         getCoinGeckoPriceQueryOptions("TRX")
@@ -27,7 +29,7 @@ export function getTronAssetGeneralInfoQueryOptions(username: string) {
         ) ?? 0;
 
       return {
-        name: "TRON",
+        name: "TRX",
         title: "Tron",
         price,
         accountBalance,

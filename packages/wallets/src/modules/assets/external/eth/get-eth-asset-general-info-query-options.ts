@@ -3,6 +3,7 @@ import { GeneralAssetInfo } from "../../types";
 import { CONFIG } from "@ecency/sdk";
 import { getEthAssetBalanceQueryOptions } from "./get-eth-asset-balance-query-options";
 import { getCoinGeckoPriceQueryOptions } from "@/modules/wallets";
+import { getAddressFromAccount } from "../common";
 
 export function getEthAssetGeneralInfoQueryOptions(username: string) {
   return queryOptions({
@@ -10,13 +11,15 @@ export function getEthAssetGeneralInfoQueryOptions(username: string) {
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
+      const address = await getAddressFromAccount(username, "ETH");
+
       await CONFIG.queryClient.fetchQuery(
-        getEthAssetBalanceQueryOptions(username)
+        getEthAssetBalanceQueryOptions(address)
       );
       const accountBalance =
-        CONFIG.queryClient.getQueryData<number>(
-          getEthAssetBalanceQueryOptions(username).queryKey
-        ) ?? 0;
+        (CONFIG.queryClient.getQueryData<number>(
+          getEthAssetBalanceQueryOptions(address).queryKey
+        ) ?? 0) / 1e18;
 
       await CONFIG.queryClient.prefetchQuery(
         getCoinGeckoPriceQueryOptions("ETH")

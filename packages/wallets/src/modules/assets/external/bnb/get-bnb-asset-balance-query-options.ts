@@ -2,11 +2,11 @@ import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
 import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-export function getTronAssetBalanceQueryOptions(address: string) {
+export function getBnbAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "tron", "balance", address],
+    queryKey: ["assets", "bnb", "balance", address],
     queryFn: async () => {
-      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/tron/${encodeURIComponent(
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/bnb/${encodeURIComponent(
         address
       )}`;
 
@@ -15,13 +15,13 @@ export function getTronAssetBalanceQueryOptions(address: string) {
         if (!response.ok) {
           throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
         }
-        return +parsePrivateApiBalance(await response.json(), "tron")
+        return +parsePrivateApiBalance(await response.json(), "bnb")
           .balanceString;
       } catch (error) {
         console.error(error);
 
         const response = await fetch(`${baseUrl}?provider=chainz`);
-        return +parsePrivateApiBalance(await response.json(), "tron")
+        return +parsePrivateApiBalance(await response.json(), "bnb")
           .balanceString;
       }
     },

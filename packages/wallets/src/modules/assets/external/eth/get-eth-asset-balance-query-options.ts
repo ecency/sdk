@@ -1,24 +1,29 @@
+import { CONFIG } from "@ecency/sdk";
 import { queryOptions } from "@tanstack/react-query";
-import { getAddressFromAccount } from "../common";
+import { parsePrivateApiBalance } from "../common/parse-private-api-balance";
 
-interface EthExplorerResponse {
-  ETH: {
-    balance: number;
-  };
-}
-
-export function getEthAssetBalanceQueryOptions(username: string) {
+export function getEthAssetBalanceQueryOptions(address: string) {
   return queryOptions({
-    queryKey: ["assets", "eth", "balance", username],
+    queryKey: ["assets", "eth", "balance", address],
     queryFn: async () => {
-      const address = await getAddressFromAccount(username, "ETH");
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/eth/${encodeURIComponent(
+        address
+      )}`;
 
-      const ethResponse = await fetch(
-        `https://api.ethplorer.io/getAddressInfo/${address}?apiKey=freekey`
-      );
-      if (!ethResponse.ok) throw new Error("Ethplorer API request failed");
-      const ethResponseData = (await ethResponse.json()) as EthExplorerResponse;
-      return +ethResponseData.ETH.balance;
+      try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+          throw new Error(`[SDK][Wallets] – request failed(${baseUrl})`);
+        }
+        return +parsePrivateApiBalance(await response.json(), "eth")
+          .balanceString;
+      } catch (error) {
+        console.error(error);
+
+        const response = await fetch(`${baseUrl}?provider=chainz`);
+        return +parsePrivateApiBalance(await response.json(), "eth")
+          .balanceString;
+      }
     },
   });
 }

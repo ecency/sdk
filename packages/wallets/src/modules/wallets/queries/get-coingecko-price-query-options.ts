@@ -45,7 +45,19 @@ export function getCoinGeckoPriceQueryOptions(currency?: string) {
           curr = "solana";
           break;
         case EcencyWalletCurrency.TON:
-          curr = "trx";
+          curr = "ton";
+          break;
+        case EcencyWalletCurrency.TRON:
+          curr = "tron";
+          break;
+        case EcencyWalletCurrency.APT:
+          curr = "aptos";
+          break;
+        case EcencyWalletCurrency.BNB:
+          curr = "binancecoin";
+          break;
+        case EcencyWalletCurrency.TON:
+          curr = "the-open-network";
           break;
         default:
           curr = currency as string;
@@ -57,15 +69,9 @@ export function getCoinGeckoPriceQueryOptions(currency?: string) {
         response = rate as CoinGeckoApiResponse;
       } else {
         const httpResponse = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price",
+          `https://api.coingecko.com/api/v3/simple/price?ids=${curr}&vs_currencies=usd`,
           {
-            method: "POST",
-            body: JSON.stringify({
-              params: {
-                ids: [curr],
-                vs_currencies: "usd",
-              },
-            }),
+            method: "GET",
           }
         );
         const data = (await httpResponse.json()) as CoinGeckoApiResponse;
@@ -74,8 +80,7 @@ export function getCoinGeckoPriceQueryOptions(currency?: string) {
         response = data;
       }
 
-      const rateValue = +response[Object.keys(response)[0]].usd;
-      return 1 / rateValue;
+      return +response[curr].usd;
     },
     enabled: !!currency,
   });

@@ -3,6 +3,7 @@ import { GeneralAssetInfo } from "../../types";
 import { CONFIG } from "@ecency/sdk";
 import { getSolAssetBalanceQueryOptions } from "./get-sol-asset-balance-query-options";
 import { getCoinGeckoPriceQueryOptions } from "@/modules/wallets";
+import { getAddressFromAccount } from "../common";
 
 export function getSolAssetGeneralInfoQueryOptions(username: string) {
   return queryOptions({
@@ -10,13 +11,15 @@ export function getSolAssetGeneralInfoQueryOptions(username: string) {
     staleTime: 60000,
     refetchInterval: 90000,
     queryFn: async () => {
+      const address = await getAddressFromAccount(username, "SOL");
+
       await CONFIG.queryClient.fetchQuery(
-        getSolAssetBalanceQueryOptions(username)
+        getSolAssetBalanceQueryOptions(address)
       );
       const accountBalance =
-        CONFIG.queryClient.getQueryData<number>(
-          getSolAssetBalanceQueryOptions(username).queryKey
-        ) ?? 0;
+        (CONFIG.queryClient.getQueryData<number>(
+          getSolAssetBalanceQueryOptions(address).queryKey
+        ) ?? 0) / 1e9;
 
       await CONFIG.queryClient.prefetchQuery(
         getCoinGeckoPriceQueryOptions("SOL")
