@@ -117,14 +117,62 @@ export function useGetExternalWalletBalanceQuery(
         throw new Error("Private API host is not configured");
       }
 
-      const response = await fetch(
-        `${CONFIG.privateApiHost}/private-api/balance/${chain}/${encodeURIComponent(
-          address,
-        )}`,
-      );
+      const baseUrl = `${CONFIG.privateApiHost}/private-api/balance/${chain}/${encodeURIComponent(
+        address,
+      )}`;
 
-      if (!response.ok) {
-        throw new Error("Private API request failed");
+      let primaryResponse: Response | undefined;
+      let primaryError: unknown;
+
+      try {
+        primaryResponse = await fetch(baseUrl);
+      } catch (error) {
+        primaryError = error;
+      }
+
+      let response = primaryResponse;
+
+      if (!response || !response.ok) {
+        const fallbackUrl = `${baseUrl}?provider=chainz`;
+        let fallbackError: unknown;
+
+        try {
+          const fallbackResponse = await fetch(fallbackUrl);
+
+          if (fallbackResponse.ok) {
+            response = fallbackResponse;
+          } else {
+            fallbackError = new Error(
+              `Fallback provider responded with status ${fallbackResponse.status}`,
+            );
+          }
+        } catch (error) {
+          fallbackError = error;
+        }
+
+        if (!response || !response.ok) {
+          const failureReasons: string[] = [];
+
+          if (primaryError) {
+            const message =
+              primaryError instanceof Error ? primaryError.message : String(primaryError);
+            failureReasons.push(`primary provider failed: ${message}`);
+          } else if (primaryResponse && !primaryResponse.ok) {
+            failureReasons.push(`primary provider status ${primaryResponse.status}`);
+          }
+
+          if (fallbackError) {
+            const message =
+              fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+            failureReasons.push(`fallback provider failed: ${message}`);
+          }
+
+          if (failureReasons.length === 0) {
+            failureReasons.push("unknown error");
+          }
+
+          throw new Error(`Private API request failed (${failureReasons.join(", ")})`);
+        }
       }
 
       const result = (await response.json()) as unknown;
