@@ -47,7 +47,7 @@ export function useAccountUpdate(username: string) {
   const { data } = useQuery(getAccountFullQueryOptions(username));
 
   return useBroadcastMutation(
-    ["accounts", "update", data?.name],
+    ["accounts", "update"],
     username,
     (payload: Partial<Payload>) => {
       if (!data) {

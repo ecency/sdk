@@ -24,7 +24,9 @@ export function getAccountWalletListQueryOptions(username: string) {
           EcencyWalletBasicTokens.Hive,
           EcencyWalletBasicTokens.HivePower,
           EcencyWalletBasicTokens.HiveDollar,
-          ...account.profile.tokens.map((token) => token.symbol),
+          ...account.profile.tokens
+            .filter(({ meta }) => !!meta?.show)
+            .map((token) => token.symbol),
         ];
 
         return Array.from(new Set(list).values());

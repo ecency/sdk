@@ -7,10 +7,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EcencyTokenMetadata } from "../types";
 import * as R from "remeda";
 import { getAccountWalletListQueryOptions } from "../queries";
+import { EcencyWalletCurrency } from "../enums";
 
 function getGroupedChainTokens(
   tokens?: AccountProfile["tokens"],
-  show = false,
+  show = false
 ) {
   if (!tokens) {
     return {};
@@ -18,7 +19,11 @@ function getGroupedChainTokens(
 
   return R.pipe(
     tokens,
-    R.filter(({ type }) => type === "CHAIN"),
+    R.filter(
+      ({ type, symbol }) =>
+        type === "CHAIN" ||
+        Object.values(EcencyWalletCurrency).includes(symbol as any)
+    ),
     R.map((item) => {
       item.meta.show = show;
       return item;
@@ -26,8 +31,8 @@ function getGroupedChainTokens(
     // Chain tokens are unique by symbol, so indexing by symbol
     // gives a direct lookup map instead of an array-based grouping.
     R.indexBy(
-      (item: NonNullable<AccountProfile["tokens"]>[number]) => item.symbol,
-    ),
+      (item: NonNullable<AccountProfile["tokens"]>[number]) => item.symbol
+    )
   );
 }
 
@@ -47,7 +52,11 @@ export function useSaveWalletInformationToMetadata(
   const { mutateAsync: updateProfile } = useAccountUpdate(username);
 
   return useMutation({
-    mutationKey: ["ecency-wallets", "save-wallet-to-metadata", accountData],
+    mutationKey: [
+      "ecency-wallets",
+      "save-wallet-to-metadata",
+      accountData?.name,
+    ],
     mutationFn: async (tokens: EcencyTokenMetadata[]) => {
       if (!accountData) {
         throw new Error("[SDK][Wallets] – no account data to save wallets");
@@ -56,24 +65,33 @@ export function useSaveWalletInformationToMetadata(
       // Chain type tokens couldn't be deleted entirely from the profile list,
       //       then visibility should be controlling using meta.show field
       const profileChainTokens = getGroupedChainTokens(
-        accountData.profile?.tokens,
+        accountData.profile?.tokens
       );
+      console.log("profile tokens are ", profileChainTokens);
       const payloadTokens =
         (tokens.map(({ currency, type, privateKey, username, ...meta }) => ({
           symbol: currency!,
-          type,
+          type:
+            (type ??
+            Object.values(EcencyWalletCurrency).includes(currency as any))
+              ? "CHAIN"
+              : undefined,
           meta,
         })) as AccountProfile["tokens"]) ?? [];
 
       const payloadChainTokens = getGroupedChainTokens(payloadTokens, true);
       const payloadNonChainTokens = payloadTokens.filter(
-        ({ type }) => type !== "CHAIN",
+        ({ type, symbol }) =>
+          type !== "CHAIN" &&
+          !Object.values(EcencyWalletCurrency).includes(symbol as any)
       );
+      console.log("payload tokens are ", payloadChainTokens);
+      console.log("payload non-chain tokens are ", payloadNonChainTokens);
 
       const mergedChainTokens = R.pipe(
         profileChainTokens,
         R.mergeDeep(payloadChainTokens),
-        R.values(),
+        R.values()
       );
 
       return updateProfile({
